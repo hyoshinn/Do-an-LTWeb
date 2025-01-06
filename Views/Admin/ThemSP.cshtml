@@ -1,0 +1,223 @@
+﻿@{
+    ViewBag.Title = "ThemSP";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var ds1 = (List<ShopBanDoGiaDung.Models.Danhmucsanpham>)ViewBag.dsdm;
+    var ds2 = (List<ShopBanDoGiaDung.Models.Hangsanxuat>)ViewBag.dsh;
+}
+
+<div class="content-wrapper">
+    <!-- Begin Page Content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Thêm thông tin sản phẩm</h3>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <form class="was-validated" method="post" action="/Admin/ThemSP" enctype="multipart/form-data">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="uname">Tên sản phẩm:</label>
+                        <input type="text" class="form-control" id="uname" placeholder="Nhập tên sản phẩm" name="TenSP" required>
+                        <div class="valid-feedback">Valid.</div>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Mô tả sản phẩm:</label>
+                        <input type="text" class="form-control" id="pwd" placeholder="Nhập mô tả sản phẩm" name="MoTa" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Ảnh 1:</label>
+                        <input type="file" class="form-control" name="image1" id="image1" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        <img id="preview1" class="img-responsive chain" style="width: 20%;display: none" src="#" alt=" ">
+                        <script>
+                            image1.onchange = evt1 => {
+
+                                const [file1] = image1.files
+
+                                if (file1) {
+                                    preview1.src = URL.createObjectURL(file1);
+                                    $("#preview1").show();
+                                }
+                            }
+
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Ảnh 2:</label>
+                        <input type="file" class="form-control" name="image2" id="image2" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        <img id="preview2" class="img-responsive chain" style="width:20%; display:none" src="#" alt=" ">
+                        <script>
+                            image2.onchange = evt2 => {
+
+                                const [file2] = image2.files
+
+                                if (file2) {
+                                    preview2.src = URL.createObjectURL(file2);
+                                    $("#preview2").show();
+                                }
+                            }
+
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Ảnh 3:</label>
+                        <input type="file" class="form-control" name="image3" id="image3" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        <img id="preview3" class="img-responsive chain" style="width:20%;display:none" src="#" alt=" ">
+                        <script>
+                            image3.onchange = evt3 => {
+
+                                const [file3] = image3.files
+
+                                if (file3) {
+                                    preview3.src = URL.createObjectURL(file3);
+                                    $("#preview3").show();
+                                }
+                            }
+
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Ảnh 4:</label>
+                        <input type="file" class="form-control" name="image4" id="image4" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        <img id="preview4" class="img-responsive chain" style="width:20%; display:none" src="#" alt=" ">
+                        <script>
+                            image4.onchange = evt4 => {
+
+                                const [file4] = image4.files
+
+                                if (file4) {
+                                    preview4.src = URL.createObjectURL(file4);
+                                    $("#preview4").show();
+                                }
+                            }
+
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Ảnh 5:</label>
+                        <input type="file" class="form-control" name="image5" id="image5" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        <img id="preview5" class="img-responsive chain" style="width:20%;display:none" src="#" alt=" ">
+                        <script>
+                            image5.onchange = evt5 => {
+                                const [file5] = image5.files
+
+                                if (file5) {
+                                    preview5.src = URL.createObjectURL(file5);
+                                    $("#preview5").show();
+                                }
+                            }
+
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Ảnh 6:</label>
+                        <input type="file" class="form-control" name="image6" id="image6" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        <img id="preview6" class="img-responsive chain" style="width:20%;display:none" alt=" ">
+                        <script>
+                            image6.onchange = evt6 => {
+
+                                const [file6] = image6.files
+
+                                if (file6) {
+                                    preview6.src = URL.createObjectURL(file6);
+                                    $("#preview6").show();
+                                }
+                            }
+
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Số lượng nhập:</label>
+                        <input type="number" class="form-control" placeholder="Nhập số lượng" name="SoLuongTrongKho" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Giá tiền:</label>
+                        <input type="number" class="form-control" placeholder="Nhập giá tiền" name="GiaTien" required>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Danh mục:</label>
+                        <select class="form-control" name="DanhMuc">
+                            <option style="display:none"></option>
+                            @foreach (var item in ds1)
+                            {
+                                <option>@item.TenDanhMuc</option>
+                            }
+
+                        </select>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Hãng sản xuất:</label>
+                        <select class="form-control" name="Hang">
+                            <option style="display:none"></option>
+                            @foreach (var item in ds2)
+                            {
+                                <option>@item.TenHang</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="Them">Thêm mới</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Hủy bỏ</button>
+                </div>
+
+            </form>
+        </div>
+
+
+    </section>
+</div>
+<script>
+    $(document).ready(function () {
+        // Sử dụng sự kiện submit của form
+        $("form").submit(function (e) {
+            e.preventDefault(); // Ngăn form thực hiện hành động mặc định (gửi yêu cầu POST)
+
+            // Lấy dữ liệu từ form
+            var formData = new FormData($(this)[0]);
+
+            $.ajax({
+                url: '@Url.Action("ThemSP", "Admin")', // URL của Controller "ThemSP"
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    // Xử lý kết quả từ Controller (nếu cần)
+
+                    // Chuyển hướng đến trang "QuanLySP"
+                    window.location.href = '@Url.Action("QuanLySP", "Admin")';
+                },
+                error: function (error) {
+                    // Xử lý lỗi nếu có
+                }
+            });
+        });
+        $('#cancel').on('click', function () {
+            window.location.href = '@Url.Action("QuanLySP", "Admin")';
+        });
+    });
+</script>
+
+<script src="~/Admin/plugins/jquery/jquery.min.js"></script>
+<script src="~/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/Admin/dist/js/adminlte.min.js"></script>
+

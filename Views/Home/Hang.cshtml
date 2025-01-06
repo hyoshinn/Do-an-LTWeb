@@ -1,0 +1,15 @@
+﻿@model List<ShopBanDoGiaDung.Models.Hangsanxuat>
+<div class=" top-nav rsidebar span_1_of_left" style="margin-top: 37px">
+    <h3 class="cate">HÃNG SẢN XUẤT</h3>
+    <ul class="menu">
+        @foreach (var item in Model)
+        {
+
+            <ul class="kid-menu">
+                @* <li><a href="@Url.Action("SPHang","Home", new { id = item.MaHang, ten =item.TenHang})">@item.TenHang</a></li> *@
+                <li><a href="" asp-controller="Home" asp-action="SPHang" asp-route-id="@item.MaHang" asp-route-ten="@item.TenHang">@item.TenHang</a></li>
+                
+            </ul>
+        }
+    </ul>
+</div>

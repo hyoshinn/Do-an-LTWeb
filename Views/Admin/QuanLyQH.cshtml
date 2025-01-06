@@ -1,0 +1,369 @@
+﻿@model X.PagedList.IPagedList<ShopBanDoGiaDung.Models.ChucVu>
+@using System.Text.Json
+@using ShopBanDoGiaDung.authorize
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+  
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var quyen = (List<ShopBanDoGiaDung.Models.Quyen>)ViewBag.quyen;
+    var chucvu = (List<ShopBanDoGiaDung.Models.ChucVu>)ViewBag.chucvu;
+    var A = (List<ShopBanDoGiaDung.Models.ActionT>)ViewBag.A;
+    List<ChucVuQuyen> cvqa = HttpContextAccessor.HttpContext.Session.GetJson<List<ChucVuQuyen>>("HD") ?? new List<ChucVuQuyen>();
+    List<AccountRole> data = HttpContextAccessor.HttpContext.Session.GetJson<List<AccountRole>>("QuyenTK") ?? new List<AccountRole>();
+    var qh = data.FirstOrDefault(c => c.ActionName == "QuanLyQH");
+
+}
+@if (qh == null || qh.MaA == 1)
+{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Full Screen Alert</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            .fullscreen-alert {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                text-align: center;
+                z-index: 1000;
+            }
+
+            .alert-content {
+                background-color: #343a40;
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            .close-btn {
+                cursor: pointer;
+                color: #fff;
+                font-size: 20px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="fullscreen-alert" id="fullscreenAlert">
+            <div class="alert-content">
+                <span class="close-btn" onclick="closeFullscreenAlert()">&times;</span>
+				<h1>Truy cập thất bại</h1>
+                <p>Bạn không có quyền truy cập trang này. Vui lòng liên hệ với chúng tôi để nhận hỗ trợ </p>
+            </div>
+        </div>
+
+        <script>
+            function showFullscreenAlert() {
+                document.getElementById('fullscreenAlert').style.display = 'flex';
+            }
+
+            function closeFullscreenAlert() {
+                document.getElementById('fullscreenAlert').style.display = 'none';
+            }
+
+            // Gọi hàm này khi trang web được tải
+            document.addEventListener('DOMContentLoaded', function () {
+                showFullscreenAlert();
+            });
+        </script>
+
+    </body>
+    </html>
+
+
+}
+else
+{
+    <div class="wrapper">
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <label class="card-title">Quản lý quyền hạn của các chức vụ</label>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                @foreach (var tenQ in cvqa.Select(item => item.TenQ).Distinct())
+                                                {
+                                                    <th>@tenQ</th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var tenCV in cvqa.Select(item => item.TenCV).Distinct())
+                                            {
+                                                <tr>
+                                                    <th>@tenCV</th>
+                                                    @foreach (var tenQ in cvqa.Select(item => item.TenQ).Distinct())
+                                                    {
+                                                        var cellData = cvqa.FirstOrDefault(item => item.TenCV == tenCV && item.TenQ == tenQ);
+                                                        <td>
+                                                            @if (cellData != null)
+                                                            {
+                                                                <select name="Action" @(qh.MaA == 2 ? "disabled" : "") class="form-control"
+                                                                         data-macv="@cellData.MaCv"
+                                                                         data-maq="@cellData.MaQ"
+                                                                         data-selected="@cellData.TenA"
+                                                                        data-maa="@cellData.MaA">
+
+                                                                    <option value="@cellData.TenA" selected>@cellData.TenA</option>
+                                                                    @foreach (var a in A)
+                                                                    {
+                                                                        <option value="@a.MaA" >@a.TenA</option>
+                                                                    }
+                                                                </select>
+                                                            }
+                                                            else
+                                                            {
+                                                                <!-- Handle the case where cellData is null -->
+                                                                <p>No data available</p>
+                                                            }
+                                                        </td>
+                                                    }
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                     <script>
+                                        $(document).ready(function () {
+                                            $('#example1').DataTable({
+                                                "responsive": true, // Giữ responsive
+                                                "lengthChange": false, // Tắt thay đổi số dòng hiển thị
+                                                "autoWidth": false, // Tắt tự động chỉnh độ rộng
+                                                "paging": false, // Tắt phân trang
+                                                "info": false, // Tắt hiển thị thông tin
+                                                "searching": true, // Giữ tính năng tìm kiếm
+                                                "ordering": true, // Giữ tính năng sắp xếp
+                                            });
+                                        });
+                                        // Áp dụng tìm kiếm toàn cục
+                                        $('#globalSearch').on('keyup', function () {
+                                            table.search(this.value).draw();
+                                        });
+                                    </script>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-5">
+                                            <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">
+                                                Danh sách từ @ViewBag.PageStartItem đến @ViewBag.PageEndItem trên tổng số @ViewBag.TotalItemCount chức vụ
+                                            </div>
+                                        </div>
+                                        <ul class="pagination">
+
+                                            @if (Model.HasPreviousPage)
+                                            {
+                                                <li class="page-item">
+                                                    <a class="page-link" href="@Url.Action("QuanLyQH", new { page = Model.PageNumber - 1 })">Previous</a>
+                                                </li>
+
+                                            }
+                                            <li class="page-item  @(1 == Model.PageNumber ? "active" : "")">
+                                                <a class="page-link" href="@Url.Action("QuanLyQH", new { page = 1 })">1</a>
+                                            </li>
+                                            @if (Model.PageNumber > 3)
+                                            {
+                                                <li class="page-item">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            }
+                                            @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+                                            {
+                                                if (i > 1 && i < Model.PageCount)
+                                                {
+                                                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                                        <a class="page-link" href="@Url.Action("QuanLyQH", new { page = i })">@i</a>
+                                                    </li>
+                                                }
+                                            }
+                                            @if (Model.PageNumber < Model.PageCount - 1)
+                                            {
+                                                <li class="page-item">
+                                                    <span class="page-link">...</span>
+                                                </li>
+                                            }
+                                            @if (Model.PageCount > 1)
+                                            {
+                                                <li class="page-item  @(Model.PageCount == Model.PageNumber ? "active" : "")">
+                                                    <a class="page-link" href="@Url.Action("QuanLyQH", new { page = Model.PageCount })">@Model.PageCount</a>
+                                                </li>
+                                            }
+                                            @if (Model.HasNextPage)
+                                            {
+
+                                                <li class="page-item">
+                                                    <a class="page-link" href="@Url.Action("QuanLyTK", new { page = Model.PageNumber + 1 })">Next</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button class="btn btn-primary" data-dismiss="modal" id="confirmThem" onclick="Them()" @if (qh.MaA == 2)
+                                    {
+                                        <text>style="display: none;"</text>
+                                    }>Thêm chức vụ mới</button>
+                                    @*<a href="#" class="btn btn-secondary" style="display: none;"><i class="material-icons">&#xE24D;</i> <span>Xuất Excel</span></a>*@
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </section>
+            <form id="frmThemHang" method="post" aria-hidden="true" tabindex="-1" role="dialog" style="display: none;" enctype="multipart/form-data">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Nhập tên chức vụ</label>
+                        <input type="text" class="form-control" id="tenhang" placeholder="Nhập tên chức vụ mới tại đây">
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirm">Thêm chức vụ</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Hủy bỏ</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function Them() {
+            var form = document.getElementById("frmThemHang");
+            form.setAttribute("aria-hidden", "false");
+            form.setAttribute("tabindex", "0");
+            form.style.display = "block";
+            $('#confirm').on('click', function () {
+                var tenhang = $('#tenhang').val().toString();
+                if (tenhang.trim() === "") {
+                    // Kiểm tra nếu trường TenHang rỗng
+                    alert("Bạn chưa nhập tên hãng.");
+                } else {
+                    // Nếu trường TenHang không rỗng, tiến hành gửi yêu cầu AJAX
+                    $.ajax({
+                        url: '/Admin/ThemCV',
+                        data: {
+                            tencv: tenhang
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.status == true) {
+                                // Đóng modal sau khi xóa thành công
+                                form.setAttribute("aria-hidden", "true");
+                                form.setAttribute("tabindex", "-1");
+                                form.style.display = "none";
+                                window.location = '@Url.Action("QuanLyQH","Admin")';
+                            }
+                        }
+                    });
+                }
+            });
+            $('#cancel').on('click', function () {
+                form.setAttribute("aria-hidden", "true");
+                form.setAttribute("tabindex", "-1");
+                form.style.display = "none";
+            });
+        }
+        $("#filterButton").click(function () {
+            const tenctkInput = $("thead tr:nth-child(1) th:nth-child(1) input");
+            const hotenInput = $("thead tr:nth-child(1) th:nth-child(2) input");
+
+            const mahang = getValueOrEmpty(tenctkInput.val());
+            const tenhang = getValueOrEmpty(hotenInput.val());
+            // Tạo đường dẫn đến action QuanLyDM trong controller
+            const url = '@Url.Action("QuanLyHang", "Admin")' + `?tenhang=${tenhang}&mahang=${mahang}`;
+
+            // Chuyển hướng đến URL tạo ra
+            window.location.href = url;
+        });
+        function getValueOrEmpty(value) {
+            return value === undefined ? "" : value.trim();
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('select[name="Action"]').change(function () {
+                var macv = $(this).data('macv');
+                var maq = $(this).data('maq');
+                var maa = $(this).data('maa');
+                var selectedValue = $(this).data('selected');
+                var newValue = $(this).val();
+
+                console.log('macv:', macv);
+                console.log('maq:', maq);
+                console.log('maa:', maa);
+                console.log('selectedValue:', selectedValue);
+                console.log('newValue:', newValue);
+
+                if (selectedValue !== newValue) {
+                    $.ajax({
+                        url: '@Url.Action("SuaQH", "Admin")',
+                        type: 'POST',
+                        data: { macv: macv, maq: maq, maa: maa, newValue: newValue },
+                        success: function (data) {
+                            console.log('ChucVu updated successfully', data);
+                        },
+                        error: function () {
+                            console.log('Error updating ChucVu');
+                        }
+                    });
+                }
+            });
+        });
+       
+
+    </script>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+
+       <!-- jQuery -->
+    <script src="~/Admin/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables & Plugins -->
+    <link rel="stylesheet" href="~/Admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <script src="~/Admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/Admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+    <script src="~/Admin/dist/js/adminlte.min.js"></script>
+}
+

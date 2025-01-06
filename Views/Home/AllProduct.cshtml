@@ -1,0 +1,209 @@
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+     @* ViewBag.Title = "AllProduct"; *@
+     Layout = "~/Views/Shared/_Layout.cshtml";
+    @* var sp = (List<ShopBanDoGiaDung.Models.Sanpham>)ViewBag.sanpham; *@
+    var sp = (QuanLyShopDoGiaDung.Common.PaginatedList<ShopBanDoGiaDung.Models.Sanpham>)ViewBag.sanpham;
+    string sessionvalue = HttpContextAccessor.HttpContext.Session.GetString("email");
+    var  max_price = ViewBag.maxPrice;
+    var min_price = ViewBag.minPrice;
+    var order_price = ViewBag.orderPrice;
+    
+}
+
+<div class="shoes-grid">
+     <div class="products" style="margin-top: 28px; }">
+               <h5 class="latest-product">TẤT CẢ SẢN PHẨM: @sp.Count sản phẩm </h5>       
+     </div>
+     <div   style="margin-top: 90px;display: flex;justify-content: flex-end;margin-right: 30px;">
+        
+         
+          <div  style="display: flex; flex-direction:column;margin-left: 30px;margin-top: 21px;">
+               <select  id="select-order-price" style="margin-bottom: 15px;" >
+                    @if(order_price == "notorder") {
+                         <option selected value="notorder">Sắp xếp tăng/giảm của giá</option>
+                    }else  { <option selected value="notorder">Sắp xếp tăng/giảm của giá</option>}
+                     @if(order_price == "tang") {
+                         <option selected value="tang">Giá tăng dân</option>
+                    }else  { <option value="tang">Giá tăng dân</option>}
+                     @if(order_price == "giam") {
+                         <option selected value="giam">Giá giảm dần</option>
+                    }else  { <option value="giam">Giá giảm dần</option>}
+               </select>
+               <button onclick="ChuyenTrang(1,6)">
+                   <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                         <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+                         </svg>
+                         <span style="margin-left: 4px;">Lọc</span>
+                   </div>
+               </button>
+          </div>
+     </div>
+
+     <div  class="product-left">
+          @foreach (var it in sp.Data)
+          {
+               <div class="col-md-4 chain-grid" style="min-height: 406.29px;">
+                    <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@it.MaSp"><img class="img-responsive chain" src="~/BigShopee/images/@it.Anh1" alt=" "></a>
+                    <span class="star"> </span>
+                    <div class="grid-chain-bottom">
+                         <h6><a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@it.MaSp">@it.TenSp</a></h6>
+                         <div class="star-price">
+                              <div class="dolor-grid">
+                                   <span class="actual">@it.GiaTien</span>
+
+                                   @*<span class="reducedfrom">400$</span>*@
+                                   <br /><span>Đã bán @it.SoLuongDaBan</span>                              
+                              </div>
+                              @* @if (sessionvalue != null)
+                              { *@
+                                   <a class="now-get get-cart" onclick="addItem(@it.MaSp)">THÊM VÀO GIỎ</a>
+                              @* }
+                              else
+                              {
+                                   <a  asp-controller="Access" asp-action="Login" class="now-get get-cart" >THÊM VÀO GIỎ</a>
+                              } *@
+                              <script>
+                                   function addItem(ma) {
+                                        var productid = parseInt(ma);
+
+                                        $.ajax({
+                                             url: '/Cart/AddItem',
+                                             data: {
+                                                  productId: productid
+                                             },
+                                             type: 'POST',
+                                             dataType: 'json',
+                                             success: function (res) {
+                                                  
+                                                  if (res.status == true) {
+                                                      $('#dot-cart').html(res.countCart)
+                                                       Swal.fire({
+                                                            position: 'center',
+                                                            icon: 'success',
+                                                            title: 'Thêm sản phẩm vào giỏ hàng thành công',
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                       })
+                                                  } else {
+                                                       Swal.fire({
+                                                            position: 'center',
+                                                            icon: 'error',
+                                                            title: 'Xin lỗi, sản phẩm bạn vừa chọn đang tạm hết hàng',
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                       })
+                                                  }
+                                             }
+
+                                        });
+                                   }
+                              </script>
+                              <div class="clearfix"> </div>
+                         </div>
+                    </div>
+               </div>
+          }
+
+      <div class="clearfix"> </div>
+     </div>
+     @* @await Html.PartialAsync("_Pagination",sp) *@
+     <nav style="float: right; margin-right: 29px;" aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+               @if (sp.CanPrevious)
+               {
+                    <li class="page-item">
+                         <a class="page-link" tabindex="-1"   onclick="ChuyenTrang(@(sp.PageIndex -1 ),6)" >Previous</a>
+                    </li>
+               }
+               else
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">Previous</a>
+                    </li>
+               }
+               
+               @if (sp.PageIndex > 3)
+               {
+                    <li class="page-item">
+                         <a class="page-link"   onclick="ChuyenTrang(1,6)">1</a>
+                    </li>
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">...</a>
+                    </li>
+               }
+
+               @for (var i = Math.Max(1, sp.PageIndex - 2); i <= Math.Min(sp.TotalPage, sp.PageIndex + 2); i++)
+               {
+                    if (sp.PageIndex == i)
+                    {
+                         <li class="page-item"><a style="background-color: #1DBAA5;" class="page-link"   onclick="ChuyenTrang(@i,6)">@i</a></li>
+                    }
+                    else
+                    {
+                         <li class="page-item"><a class="page-link"  onclick="ChuyenTrang(@i,6)" >@i</a></li>
+                    }
+               }
+
+               @if (sp.PageIndex < sp.TotalPage - 2)
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">...</a>
+                    </li>
+                    <li class="page-item">
+                         <a class="page-link"   onclick="ChuyenTrang(@sp.TotalPage,6)">@sp.TotalPage</a>
+                    </li>
+               }
+
+               @if (sp.CanNext)
+               {
+                    <li class="page-item">
+                         <a class="page-link" aria-disabled="@sp.CanNext"  onclick="ChuyenTrang(@(sp.PageIndex + 1),6)">Next</a>
+                    </li>
+               }
+               else
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link">Next</a>
+                    </li>
+               }
+          </ul>
+      </nav>
+</div>
+<script>
+     function formatcurrency(cur) {
+          return new Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'vnd' }).format(cur);
+     }
+     const moneylist = document.querySelectorAll(".actual")
+     for (let i = 0; i < moneylist.length; i++) {
+          moneylist[i].innerHTML = formatcurrency(Number(moneylist[i].innerHTML))
+     }
+
+     function ChuyenTrang(PageIndex, PageSize) {
+          const maxPrice =parseInt( $("#max-price").val()?.replace(/,/g, ''))
+          const minPrice =parseInt( $("#min-price").val()?.replace(/,/g, ''))
+          const orderPrice = $("#select-order-price").val();
+          $.ajax({
+                url: '@Url.Action("AllProduct","Home")',
+               type: 'GET',
+               success: function (res) { 
+                    let stringMaMinPrice = `&maxPrice=${maxPrice}`+ `&minPrice=${minPrice}`
+                    let stringSapXepGia =''
+                    if(orderPrice !== "notorder"){
+                         stringSapXepGia =  `&orderPrice=${orderPrice}`
+                    }
+                    if(maxPrice === 100000000 && minPrice === 0){
+                      stringMaMinPrice=''
+                    }
+                     window.location = '@Url.Action("AllProduct","Home")' + `?PageIndex=${PageIndex}` + `&PageSize=${PageSize}`+ stringMaMinPrice + stringSapXepGia 
+                  
+               }
+
+          });
+
+     }
+
+
+</script>

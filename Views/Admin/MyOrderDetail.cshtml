@@ -1,0 +1,41 @@
+﻿@{
+  
+    @model List<ShopBanDoGiaDung.Models.MyOrderDetail>
+
+}
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Chi tiết đơn hàng</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td>Mã SP</td>
+                    <td>Tên SP</td>
+                    <td>Ảnh SP</td>
+                    <td>Số lượng mua</td>
+                    <td>Đơn giá</td>
+                    <td>Thành tiền</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaSanPham</td>
+                        <td><a href="@Url.Action("ProductDetail","Home", new { id = @item.MaSanPham})">@item.TenSP</a></td>
+                        <td><img class="img-responsive" style="width:70%" src="~/BigShopee/images/@item.Anh" /></td>
+                        <td>@item.SoLuong</td>
+                        <td>@item.GiaBan.Value.ToString("N0")</td>
+                        <td>@item.ThanhTien.Value.ToString("N0")</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+
+    </div>
+</div>

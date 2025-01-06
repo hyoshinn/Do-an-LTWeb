@@ -1,0 +1,268 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@model List<QuanLyShopDoGiaDung.Models.CartModel>
+@{
+     ViewBag.Title = "Index";
+     Layout = "~/Views/Shared/_Layout.cshtml";
+    string Ten = HttpContextAccessor.HttpContext.Session.GetString("Ten");
+    string SDT = HttpContextAccessor.HttpContext.Session.GetString("SDT");
+    string DiaChi = HttpContextAccessor.HttpContext.Session.GetString("DiaChi");
+    var tongtien = ViewBag.tongtien;
+}
+
+<div class=" single_top">
+     <div class="single_grid">
+          <div id="cartContent">
+               @if (Model.Count > 0)
+               {
+                    <table class="table table-hover">
+                         <thead>
+                              <tr>
+                                   <td style="font-weight: 700;">Mã sản phẩm</td>
+                                   <td style="font-weight: 700;">Tên sản phẩm</td>
+                                   <td style="font-weight: 700;">Ảnh sản phẩm</td>
+                                   <td style="font-weight: 700;">Số lượng</td>
+                                   <td style="font-weight: 700;">Đơn giá</td>
+                                   <td style="font-weight: 700;">Thành tiền</td>
+                              </tr>
+                         </thead>
+                         <tbody>
+                              @foreach (var item in Model)
+                              {
+                                   <tr id="orderdetail_@item.sanpham.MaSp">
+                                        <td>@item.sanpham.MaSp</td>
+                                        <td><a asp-action="ProductDetail" asp-controller="Home"  asp-route-id="@item.sanpham.MaSp">@item.sanpham.TenSp</a></td>
+                                        <td><img class="img-responsive" style="width: 100px;" src="~/BigShopee/images/@item.sanpham.Anh1" /></td>
+                                        <td>
+                                             <input id="input_amout_@item.sanpham.MaSp" type="number" min="1" max="@item.sanpham.SoLuongTrongKho" onchange="updateAmount(@item.sanpham.MaSp)" value="@item.soluong">
+                                             <p id="announce_het_hang_@item.sanpham.MaSp" style="color: red;"></p>
+                                        </td>
+
+                                        <td id="gia" data-price="@item.sanpham.GiaTien">@item.sanpham.GiaTien.Value.ToString("N0")</td>
+                                        <td id="amount_@item.sanpham.MaSp">@((item.sanpham.GiaTien * item.soluong).Value.ToString("N0"))</td>
+                                        @* <td><a style="font-weight: 600;" href="#" data-id="@item.sanpham.MaSp" class="btn-delete">X</a></td> *@
+                                        <td><a style="font-weight: 600;" href="#" onclick="deleteOrderDetail(@item.sanpham.MaSp)">X</a></td>
+                                   </tr>
+                              }
+
+                         </tbody>
+                    </table>
+                    <div style="font-size: 20px; font-weight: 700;" class="pull-right">
+                         Tổng tiền: <span id="lblTotalOrder" name="tongtien">@tongtien.ToString("N0")</span><span> VND</span>
+                    </div>
+                    
+                    <div  >
+                         <button id="btnContinue" style=" background-color: #007bff;border-color: #007bff;" class="btn btn-primary" class="btn btn-success">Tiếp tục mua hàng</button>
+                         <button onclick="deleteCart()" class="btn btn-danger">Xoá giỏ hàng</button>
+                         <button  class="btn btn-success"  id="btnCheckout" >Thanh toán</button>
+                    </div>
+                    
+               }
+               else
+               {
+                    <span class="alert alert-danger">Chưa có sản phẩm nào trong giỏ hàng</span>
+               }
+
+               <div class="clearfix"> </div>
+          </div>
+
+          <div id="divCheckout" style="display:none;">
+               <div class="reservation_top">
+                    <div class="contact_right">
+                         <h3>NHẬP THÔNG TIN GIAO HÀNG</h3>
+                         <div class="contact-form">
+                              @* <form method="post" action="/Cart/ThanhToan" autocomplete="off"> *@
+                                   <div class="register-top-grid">
+                                        @*<h3>NHẬP THÔNG TIN GIAO HÀNG</h3>*@
+                                        <div class="mation">
+                                             <span>Họ tên <label style="color: red;font-size:14px;">*</label></span>
+                                             <input   type="text" style="color:black" id="Ten" name="ten" value="@Ten">
+                                              <p  id="vld-name" style="right:24%;font-size:13px; color: red"></p>
+
+
+                                             <span>Số điện thoại <label style="color: red;font-size:14px;">*</label></span>
+                                             <input  type="text" style="color:black" id="SDT" name="SDT" value="@SDT">
+                                              <p  id="vld-sdt" style="right:24%;font-size:13px; color: red "></p>
+                                             <span>Địa chỉ  <label style="color: red;font-size:14px;">*</label></span>
+                                             <input type="text" style="color:black" id="DiaChi" name="DiaChi" value="@DiaChi">
+                                              <p  id="vld-diachi" style="right:24%;font-size:13px; color: red "></p>
+                                             <span>Chọn hình thức thanh toán <label style="color: red;font-size:14px;">*</label></span>
+                                             <div class="form-group" style="width:90%">
+                                                
+                                                  <select class="form-control" id="httt" name="httt">
+                                                       @* <option value="1">Thanh toán qua VNPay</option> *@
+                                                       <option value="2">Thanh toán khi nhận hàng</option>
+
+                                                  </select>
+                                             </div>
+                                            
+                                        </div>    
+                                      
+                                   </div>
+                              <button onclick="ThanhToan()" class="btn btn-success">Xác nhận </button>
+                                   <div class="clearfix"> </div>
+                                 
+                         
+
+                         </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+</div>
+
+<script>
+
+       function updateAmount(ma) {
+          var amount = $(`#input_amout_${ma}`).val() 
+          var productid = parseInt(ma);
+          if(amount <= 0) {
+               $(`#orderdetail_${productid}`).remove()
+          }
+          $.ajax({
+               url: '/Cart/Update',
+               data: {
+                    productId: productid,
+                    amount: amount
+               },
+               type: 'POST',
+               dataType: 'json',
+               success: function (res) {
+                    console.log(res)
+                    if(res.kiemtrahethang === "hethang") {
+                      $("#btnCheckout").prop('disabled', true)
+                      $(`#announce_het_hang_${ma}`).html("Sản phẩm đã hết hàng")
+                    }else {
+                        $("#btnCheckout").prop('disabled', false)
+                       $("#announce_het_hang").html("")
+                    }
+                    if(res.countCart) {
+                         $('#dot-cart').html(res.countCart)
+                    }
+                    $(`#amount_${ma}`).html(`${res.price.toLocaleString('en-US')}`);
+                    $(`#lblTotalOrder`).html(`${res.tongtien.toLocaleString('en-US')} VNĐ`)
+                    
+               }
+
+          });
+     }
+
+     function ThanhToan(){
+          var ten = $('#Ten').val()
+          var sdt = $('#SDT').val()
+          var diachi = $('#DiaChi').val()
+          
+          if(ten && sdt && diachi){
+               $.ajax({
+                    url: '/Cart/ThanhToan',
+                    data: {
+                         ten: ten,
+                         SDT: sdt,
+                         DiaChi:diachi
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (res) {
+                         if (res.status == true) {
+                    Swal.fire({
+                                   position: 'center',
+                                   icon: 'success',
+                                   title: 'Thanh toán thành công',
+                                   confirmButtonText: 'OK',
+                                   
+                              }).then((result) => {
+                                   if (result.isConfirmed) {
+                                        window.location = '@Url.Action("Index","Home")'
+                                   }
+                              
+                              })
+                    
+                    
+                         } else {
+                              Swal.fire({
+                                   position: 'center',
+                                   icon: 'error',
+                                   title: res.message,
+                                   showConfirmButton: false,
+                                   timer: 1500
+                              })
+                         
+                         }
+                         
+                    }
+
+               });
+          } else {
+               if(!ten){
+                    $('#vld-name').text('Vui lòng nhập họ và tên')
+               }
+               if(!sdt){
+                    $('#vld-sdt').text('Vui lòng nhập số điện thoại')
+               }
+               if(!diachi){
+                    $('#vld-diachi').text('Vui lòng nhập địa chỉ')
+               }
+               Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: "Thanh toán thất bại",
+                    showConfirmButton: false,
+                    timer: 1500
+               })
+               
+          }
+          
+         
+     }
+
+
+     function deleteOrderDetail (id) {
+         Swal.fire({
+             title: 'Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng ?',
+            showCancelButton: true,
+            confirmButtonText: 'Xóa',
+            denyButtonText: `Hủy`
+         }).then((result)=> {
+           if(result.isConfirmed){
+                 $.ajax({
+                    data: { id: id },
+                    url: '/Cart/Delete',
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function (res) {
+                         if (res.status == true) {
+                               window.location = '@Url.Action("Index","Cart")'
+                         }
+                    }
+               })
+           }
+         })
+     }
+
+     function deleteCart() {
+          Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa giỏ hàng ?',
+                   showCancelButton: true,
+                   confirmButtonText: 'Xóa',
+                   denyButtonText: `Hủy`
+                }).then((result)=> {
+                    if(result.isConfirmed){
+                         $.ajax({
+                              url: '/Cart/DeleteAll',
+                              dataType: 'json',
+                              type: 'POST',
+                              success: function (res) {
+                                   if (res.status == true) {
+                                         window.location = '@Url.Action("Index","Cart")'
+                                   }
+                              }
+                         })
+                    }
+                })
+     }
+
+
+  
+</script>
+

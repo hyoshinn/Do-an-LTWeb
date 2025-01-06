@@ -1,0 +1,135 @@
+﻿
+@{
+     ViewBag.Title = "profile";
+     Layout = "~/Views/Shared/_Layout.cshtml";
+     var it = (List<ShopBanDoGiaDung.Models.Taikhoan>)ViewBag.taikhoan;
+}
+<style>
+   .profile-info{
+      display: flex;
+      flex-direction: column;
+      background-color: whitesmoke;
+      margin-bottom: 10px;
+   }
+   .profile-content{
+     padding: 10px;
+   }
+   .title-profile{
+     font-weight: 600;
+   }
+</style>
+ <div id="profile" style="width: 70%;float: right;margin-top: 20px;">
+         
+     <form asp-controller="Home" asp-action="ChangeProfile">
+          <input type="number" class="form-control" style="display: none;" name="MaTaiKhoan" value="@it[0].MaTaiKhoan">
+          <div class="card mb-3 content profile-info">
+          <div class="profile-content">
+                <i onclick="handleEdit()"  style="color:rgba(0, 0, 0, 0.519);float: right;cursor: pointer;"  class="fas fa-pen"></i>
+               <h2 class="m-3 pt-3">Thông tin cơ bản</h2>
+               <div class="card-body">
+                    <div style="padding-bottom: 8px;" class="row">
+                         <div class="col-md-3 title-profile">
+                              Họ và tên
+                         </div>
+                         <div  class="col-md-9 text-secondary  text-profile">
+                              @it[0].Ten
+                         </div>
+
+                         <div style="display: none;" class="input-profile col-md-9">
+                             <input type="text" class="form-control" id="Ten" name="Ten" value="@it[0].Ten">
+                         </div>
+                    </div>
+             
+                    <div  style="padding-bottom: 8px;" class="row">
+                         <div class="col-md-3  title-profile">
+                              Ngày sinh
+                         </div>
+                         <div class="col-md-9 text-secondary  text-profile">
+                              @* @it[0]?.NgaySinh.Value.ToString("dd/MM/yyyy")                  *@
+                              @((it[0].NgaySinh.HasValue ? it[0].NgaySinh.Value.ToString("yyyy-MM-dd") : string.Empty))
+                         </div>
+                         <div style="display: none;" class="input-profile col-md-9">
+                             <input type="date" class="form-control" id="Ten" name="NgaySinh" value="@((it[0].NgaySinh.HasValue ? it[0].NgaySinh.Value.ToString("yyyy-MM-dd") : string.Empty))"
+>
+                         </div>
+                    </div>
+       
+                    <div  style="padding-bottom: 8px;" class="row">
+                         <div class="col-md-3  title-profile">
+                            Địa chỉ
+                         </div>
+                         <div class="col-md-9 text-secondary  text-profile">
+                              @it[0].DiaChi
+                         </div>
+                           <div style="display: none;" class="input-profile col-md-9">
+                             <input type="text" class="form-control" id="Ten" name="DiaChi" value="@it[0].DiaChi">
+                         </div>
+                    </div>
+               </div>
+                  
+           </div>
+      </div>
+      <div class="card mb-3 content profile-info">
+           <div class="profile-content">     
+                <h2 class="m-3 pt-3">Thông tin liên hệ</h2>
+                <div  style="padding-bottom: 8px;" class="row">
+                     <div class="col-md-3  title-profile">
+                              Số điện thoại 
+                    </div>
+                    <div class="col-md-9 text-secondar  text-profile">
+                              @it[0].Sdt
+                    </div>
+                    <div style="display: none;" class="input-profile col-md-9">
+                             <input type="text" class="form-control" id="Ten" name="Sdt" value="@it[0].Sdt">
+                    </div>
+               </div>
+                 
+                    <div  style="padding-bottom: 8px;" class="row">
+                         <div class="col-md-3  title-profile">
+                              Email
+                         </div>
+                         <div class="col-md-9 text-secondary text-profile">
+                              @it[0].Email
+                         </div>
+                          <div style="display: none;" class="input-profile col-md-9">
+                             <input type="text" class="form-control" id="Ten" name="Email" value="@it[0].Email">
+                         </div>
+                   </div>
+           </div>
+     </div>
+     <button type="submit" id="btn-save" style="background-color: #357ebd;float: right;display: none;"  type="button" class="btn btn-primary">Lưu thay đổi</button>
+     <button onclick="hanldeCancle()"  style="margin-right: 5px;display: none;float: right;" id="btn-cancle"   type="button" class="btn btn-danger">Hủy</button>
+     </form>
+ </div>
+ <script>
+     function handleEdit(){
+          
+          const element = document.getElementById("profile");
+          const input_profiles = document.querySelectorAll(".input-profile");
+          const text_profiles = document.querySelectorAll('.text-profile');
+          const btn_save = document.getElementById("btn-save");  
+          const btn_cancle = document.getElementById("btn-cancle");
+
+          @* text_profiles.forEach(text => text.remove() ) *@
+          text_profiles.forEach(text => text.style.display = "none")
+          input_profiles.forEach(profile => {
+               profile.style.display = "block";   
+          })
+          btn_save.style.display="block";    
+          btn_cancle.style.display= "block";
+
+     }
+     function hanldeCancle () {
+          @* const input_profiles = document.querySelectorAll(".input-profile");
+          const text_profiles = document.querySelectorAll('.text-profile');
+          const btn_save = document.getElementById("btn-save");  
+          const btn_cancle = document.getElementById("btn-cancle");
+
+          input_profiles.forEach(profile => profile.style.display="none"  )
+          text_profiles.forEach(text => {
+               tetx.style.display = "block";   
+          })
+          btn_save.style.display="none";    
+          btn_cancle.style.display= "none"; *@
+     }
+ </script>

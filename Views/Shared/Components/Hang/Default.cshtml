@@ -1,0 +1,127 @@
+@model List<ShopBanDoGiaDung.Models.Hangsanxuat>
+    @{
+        var id =  ViewBag.idHang; 
+        var idHangs = ViewBag.idHangs;
+    }
+@* <div class=" top-nav rsidebar span_1_of_left" style="margin-top: 37px">
+    <h3 class="cate">HÃNG SẢN XUẤT</h3>
+    <ul class="menu">
+        @foreach (var item in Model)
+        {
+            if(id == item.MaHang){
+              <ul style="background-color: #1DBAA5;" class="kid-menu">
+                <li><a href="@Url.Action("SPHang","Home", new { idHang = item.MaHang, ten =item.TenHang})">@item.TenHang</a></li>
+              </ul>
+            }else{
+             <ul class="kid-menu">
+                <li><a href="@Url.Action("SPHang","Home", new { idHang = item.MaHang, ten =item.TenHang})">@item.TenHang</a></li>
+            </ul>
+            }
+
+            
+        }
+    </ul>
+</div> *@
+
+<style>
+   .separator2 {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        font-size: 25px;
+        margin-bottom: 15px;
+        margin-top: 10px;
+        }
+
+        .separator2::before,
+        .separator2::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #0000005f;
+        }
+
+        .separator2:not(:empty)::before {
+        margin-right: .25em;
+        }
+
+        .separator2:not(:empty)::after {
+        margin-left: .25em;
+        }
+</style>
+
+  <div>
+             @* <div style="font-size: 25px; align-items: center;margin-bottom: 8px;margin-top: 15px;">Hãng sản xuất</div> *@
+             <div class="separator2">Hãng sản xuất</div>
+
+              <div class="row">
+                      @foreach (var item in Model)
+                        {
+                            
+                            <div  class="form-check col col-sm-6">
+                                   @{
+                                      
+                                          @* var  isChecked = !string.IsNullOrEmpty(idCategorys) && idCategorys.Split(',').Any(s => s.Trim() == item.MaHang.ToString()); *@
+                                           bool isChecked = false;
+                                            if (!string.IsNullOrEmpty(idHangs))
+                                            {
+                                                var hangs = idHangs.Split(',');
+                                                foreach (var hang in hangs)
+                                                {
+                                                    if (hang.ToString() == item.MaHang.ToString())
+                                                    {
+                                                        isChecked = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }                                      
+                                    }
+                                <input onclick="ChonDanhMuc()" class="form-check-input" type="checkbox" id="hang-@item.MaHang" name="hang" value="@item.MaHang" @(isChecked ? "checked" : "")/>
+                                <label class="form-check-label" for="ncc">@item.TenHang</label>
+                            </div>                
+                          
+                        }
+              </div>
+       </div>
+<script>
+    
+    function ChonDanhMuc() {
+        var selectedValues = [];   
+          const lst_id_category = $("#lst_id_category").val()
+          const maxPrice = $("#max_price_search").val()
+          const minPrice = $("#min_price_search").val()
+          const search = $("#search-name").val()
+        // Lặp qua tất cả các checkbox để lấy giá trị của những checkbox đã chọn
+        $('input[name="hang"]:checked').each(function() {
+            selectedValues.push($(this).val());
+        });
+          $.ajax({
+                url: '@Url.Action("AllProduct2","Home")',
+               type: 'GET',
+               success: function (res) { 
+                  var stringIdHang = `&idHangs=${selectedValues.join(',')}`
+                  let stringCategory = ""
+                     if (lst_id_category && lst_id_category !== "") {
+                         stringCategory = `&idCategories=${lst_id_category}`
+                     }
+                    let stringMaxPrice = ""
+                    let stringMinPrice = ""
+                    if(maxPrice) {
+                         stringMaxPrice = `&maxPrice=${maxPrice}`
+                    }
+                    if(minPrice) {
+                         stringMinPrice = `&minPrice=${minPrice}`
+                    }
+                     let stringSearch = ""
+                    if (search) {
+                        stringSearch = `&search=${search}`
+                    }
+                 window.location = '@Url.Action("AllProduct2","Home")' + `?PageIndex=${1}` + `&PageSize=${6}`+ stringIdHang + stringCategory + stringMaxPrice + stringMinPrice + stringSearch
+               }
+
+          });
+
+     }
+
+
+
+</script>

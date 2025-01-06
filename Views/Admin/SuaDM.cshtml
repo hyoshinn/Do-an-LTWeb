@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    @model ShopBanDoGiaDung.Models.Danhmucsanpham
+
+}
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Cập nhật thông tin danh mục</h3>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <form id="frmSuaDM" method="post">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Tên danh mục:</label>
+                        <input type="text" class="form-control" id="tenhangmoi" value="@Model.TenDanhMuc" name="Moi">
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary" onclick="SuaDM(@Model.MaDanhMuc)" id="confirm">Lưu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">Hủy bỏ</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </section>
+</div>
+
+<script>
+    function SuaDM(id) {
+
+        $('#confirm').on('click', function () {
+            var tenhang = $('#tenhangmoi').val().toString();
+            if (tenhang.trim() === "") {
+                // Kiểm tra nếu trường TenHang rỗng
+                alert("Bạn chưa nhập tên danh mục.");
+            } else {
+                // Nếu trường TenHang không rỗng, tiến hành gửi yêu cầu AJAX
+                $.ajax({
+                    url: '/Admin/SuaDM',
+                    data: {
+                        id: id,
+                        name: tenhang
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == true) {
+                            window.location = '@Url.Action("QuanLyDM","Admin")'
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Sửa thành công',
+                                showConfirmButton: false,
+                                timer: 100
+                            })
+                        }
+                    }
+                });
+            }
+        });
+        $('#cancel').on('click', function () {
+            window.location = '@Url.Action("QuanLyDM","Admin")'
+        });
+    }
+
+</script>

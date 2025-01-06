@@ -1,0 +1,364 @@
+﻿@model X.PagedList.IPagedList<ShopBanDoGiaDung.Models.SanPhamct>
+@using System.Text.Json
+@using ShopBanDoGiaDung.authorize
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewBag.Title = "QuanLySP";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var max_price = ViewBag.MaxPrice;
+    var min_price = ViewBag.MinPrice;
+    var order_price = ViewBag.SortOrder;
+    var ten = ViewBag.tenSP;
+    var dsdm = (List<ShopBanDoGiaDung.Models.Danhmucsanpham>)ViewBag.dsdm;
+    var dsh = (List<ShopBanDoGiaDung.Models.Hangsanxuat>)ViewBag.dsh;
+    var tenh = ViewBag.tenh;
+    var ban = ViewBag.ban;
+    var slc = ViewBag.slc;
+    var tendm = ViewBag.tendm;
+    var chucvu = (List<ShopBanDoGiaDung.Models.ChucVu>)ViewBag.chucvu;
+    List<AccountRole> data = HttpContextAccessor.HttpContext.Session.GetJson<List<AccountRole>>("QuyenTK") ?? new List<AccountRole>();
+    var qh = data.FirstOrDefault(c => c.ActionName == "QuanLySP");
+
+}
+@if (qh == null || qh.MaA == 1)
+{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Full Screen Alert</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+            }
+
+            .fullscreen-alert {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                text-align: center;
+                z-index: 1000;
+            }
+
+            .alert-content {
+                background-color: #343a40;
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            .close-btn {
+                cursor: pointer;
+                color: #fff;
+                font-size: 20px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="fullscreen-alert" id="fullscreenAlert">
+            <div class="alert-content">
+                <span class="close-btn" onclick="closeFullscreenAlert()">&times;</span>
+                <h1>Truy cập thất bại</h1>
+                <p>Bạn không có quyền truy cập trang này. Vui lòng liên hệ với chúng tôi để nhận hỗ trợ </p>
+            </div>
+        </div>
+
+        <script>
+            function showFullscreenAlert() {
+                document.getElementById('fullscreenAlert').style.display = 'flex';
+            }
+
+            function closeFullscreenAlert() {
+                document.getElementById('fullscreenAlert').style.display = 'none';
+            }
+
+            // Gọi hàm này khi trang web được tải
+            document.addEventListener('DOMContentLoaded', function () {
+                showFullscreenAlert();
+            });
+        </script>
+
+    </body>
+    </html>
+
+
+}
+else
+{
+    
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <label class="card-title">Quản lý sản phẩm</label>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                      
+                                        <tr>
+
+                                            <th>Tên sản phẩm</th>
+                                            <th>Ảnh sản phẩm</th>
+                                            <th>Hãng sản xuất</th>
+                                            <th>Danh mục sản phẩm</th>
+                                            <th>Giá bán</th>
+                                            <th>Số lượng đã bán</th>
+                                            <th>Số lượng còn lại</th>
+                                            <th> Sửa sản phẩm</th>
+                                            <th> Xóa sản phẩm</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+
+                                                <td><a href="@Url.Action("ProductDetail", "Home", new { id = item.MaSp })">@item.TenSp</a></td>
+                                                <td><img class="img-responsive" style="max-width: 50%;" src="~/Admin/images/@item.Anh1" /></td>
+                                                <td>@item.Hang</td>
+                                                <td>@item.DanhMuc</td>
+                                                <td>@item.GiaTien?.ToString("N0")</td>
+                                                <td>@item.SoLuongDaBan</td>
+                                                <td>@item.SoLuongTrongKho</td>
+                                                @if (qh.MaA != 2)
+                                                {
+                                                    <td>
+                                                        <a href="@Url.Action("SuaSP", "Admin", new { ma = item.MaSp })" class="btn btn-success">Chỉnh sửa</a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-danger" title="Delete" data-toggle="modal" onclick="XoaSP(@item.MaSp)">Xóa</a>
+                                                    </td>
+                                                }
+
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                                <script>
+                                    $(document).ready(function () {
+                                        // Khởi tạo DataTable
+                                        var table = $('#example1').DataTable({
+                                            "responsive": true,
+                                            "lengthChange": false,
+                                            "autoWidth": false,
+                                            "paging": false,
+                                            "info": false,
+                                            "searching": true,  // Kích hoạt tìm kiếm
+                                            "ordering": true    // Kích hoạt sắp xếp
+                                        });
+
+                                        // Áp dụng tìm kiếm toàn cục
+                                        $('#globalSearch').on('keyup', function () {
+                                            table.search(this.value).draw();
+                                        });
+                                    });
+
+                                </script>
+                                <!-- Hiển thị thanh phân trang -->
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-5">
+                                        <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">
+                                            Danh sách từ @ViewBag.PageStartItem đến @ViewBag.PageEndItem trên tổng số @ViewBag.TotalItemCount sản phẩm
+                                        </div>
+                                    </div>
+                                    <ul class="pagination">
+
+                                        @if (Model.HasPreviousPage)
+                                        {
+                                            <li class="page-item ">
+                                                <a class="page-link" href="@Url.Action("QuanLySP", new {tenSP=ten, tenh=tenh,tendm=tendm,slc=slc, ban=ban,minPrice=min_price,maxPrice=max_price, sortOrder=order_price, page = Model.PageNumber - 1 })">Previous</a>
+                                            </li>
+
+                                        }
+                                        <li class="page-item @(1 == Model.PageNumber ? "active" : "")">
+                                            <a class="page-link" href="@Url.Action("QuanLySP", new {tenSP=ten, tenh=tenh,tendm=tendm,slc=slc, ban=ban,minPrice=min_price,maxPrice=max_price, sortOrder=order_price, page = 1 })">1</a>
+                                        </li>
+                                        @if (Model.PageNumber > 3)
+                                        {
+                                            <li class="page-item">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                        @for (int i = Model.PageNumber - 1; i <= Model.PageNumber + 1; i++)
+                                        {
+                                            if (i > 1 && i < Model.PageCount)
+                                            {
+                                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                                    <a class="page-link" href="@Url.Action("QuanLySP", new {tenSP=ten, tenh=tenh,tendm=tendm,slc=slc, ban=ban,minPrice=min_price,maxPrice=max_price, sortOrder=order_price, page = i })">@i</a>
+                                                </li>
+                                            }
+                                        }
+                                        @if (Model.PageNumber < Model.PageCount - 1)
+                                        {
+                                            <li class="page-item">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        }
+                                        @if (Model.PageCount > 1)
+                                        {
+                                            <li class="page-item @(Model.PageCount == Model.PageNumber ? "active" : "")">
+                                                <a class="page-link" href="@Url.Action("QuanLySP", new {tenSP=ten, tenh=tenh,tendm=tendm,slc=slc, ban=ban,minPrice=min_price,maxPrice=max_price, sortOrder=order_price, page = Model.PageCount })">@Model.PageCount</a>
+                                            </li>
+                                        }
+
+                                        @if (Model.HasNextPage)
+                                        {
+
+                                            <li class="page-item">
+                                                <a class="page-link" href="@Url.Action("QuanLySP", new { tenSP=ten, tenh=tenh,tendm=tendm,slc=slc, ban=ban,minPrice=min_price,maxPrice=max_price, sortOrder=order_price,page = Model.PageNumber + 1 })">Next</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <form method="post" action="@Url.Action("ThemSP", "Admin")">
+                                <button type="submit" class="btn btn-success" @if (qh.MaA == 2)
+                                {
+                                    <text>style="display: none;"</text>
+                                }>Thêm sản phẩm mới</button>
+                            </form>
+
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+
+    <!-- Đoạn mã HTML cho modal xác nhận xóa -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Bạn có chắc chắn muốn xóa sản phẩm?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirmDeleteButton">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Đoạn mã JavaScript để xử lý sự kiện xóa -->
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script>
+        function XoaSP(ma) {
+            var masp = parseInt(ma);
+
+            // Hiển thị modal xác nhận xóa
+            $('#confirmDeleteModal').modal('show');
+
+            // Xử lý sự kiện khi người dùng xác nhận xóa
+            $('#confirmDeleteButton').on('click', function () {
+                $.ajax({
+                    url: '/Admin/XoaSP',
+                    data: {
+                        masp: masp
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status == true) {
+                            // Đóng modal sau khi xóa thành công
+                            $('#confirmDeleteModal').modal('hide');
+                            window.location = '@Url.Action("QuanLySP","Admin")';
+                        }
+                    }
+                });
+            });
+        }
+
+        // $(document).ready(function () {
+
+        //     $("#filterButton").click(function () {
+        //         // Lấy các giá trị từ các phần tử trên trang
+        //         const tenInput = $("thead tr:nth-child(1) th:nth-child(1) input");
+        //         const HangInput = $("thead tr:nth-child(1) th:nth-child(3) select");
+        //         const DanhMucInput = $("thead tr:nth-child(1) th:nth-child(4) select");
+        //         const minPriceInput = $("thead tr:nth-child(1) th:nth-child(5) input:nth-child(1)");
+        //         const maxPriceInput = $("thead tr:nth-child(1) th:nth-child(5) input:nth-child(2)");
+        //         const banInput = $("thead tr:nth-child(1) th:nth-child(6) input");
+        //         const slcInput = $("thead tr:nth-child(1) th:nth-child(7) input");
+
+        //         // Lấy giá trị từ các phần tử
+        //         const ten = getValueOrEmpty(tenInput.val());
+        //         const Hang = getValueOrEmpty(HangInput.val());
+        //         const DanhMuc = getValueOrEmpty(DanhMucInput.val());
+        //         const minPrice = parseInt(minPriceInput.val().replace(/,/g, '')) || 0;
+        //         const maxPrice = parseInt(maxPriceInput.val().replace(/,/g, '')) || 0;
+        //         const ban = getValueOrEmpty(banInput.val());
+        //         const slc = getValueOrEmpty(slcInput.val());
+
+        //         // Xây dựng URL và điều hướng tới nó
+        //         const sortOrderParam = "notorder"; // You may want to modify this based on your actual requirements
+        //         const url = `@Url.Action("QuanLySP", "Admin")?tenSP=${ten}&tenh=${Hang}&tendm=${DanhMuc}&minPrice=${minPrice}&maxPrice=${maxPrice}&ban=${ban}&slc=${slc}&sortOrder=${sortOrderParam}`;
+        //         // Sử dụng `window.location.href` để chuyển hướng đến URL
+        //         window.location.href = url;
+        //     });
+
+        //     // Hàm để xử lý giá trị là null hoặc chuỗi rỗng
+        //     function getValueOrEmpty(value) {
+        //         return value === undefined ? "" : value.trim();
+        //     }
+
+
+        // });
+    </script>
+    <!-- jQuery -->
+    <script src="~/Admin/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables & Plugins -->
+    <link rel="stylesheet" href="~/Admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <script src="~/Admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/Admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+    <script src="~/Admin/dist/js/adminlte.min.js"></script>
+
+}
+
+
+

@@ -1,0 +1,191 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">Thống kê doanh thu</h1>
+                @*<p class="mb-4">
+                Chart.js is a third party plugin that is used to generate the charts in this theme.
+                The charts below have been customized - for further customization options, please visit the <a target="_blank" href="https://www.chartjs.org/docs/latest/">
+                official Chart.js
+                documentation
+                </a>.
+                </p>*@
+
+                <!-- Content Row -->
+                <div class="row">
+
+                    <div class="col-xl-12 col-lg-7">
+                        <label>Chọn năm</label>
+                        <select id="select" class="form-control" style="width:150px">
+                            <option>Chọn năm</option>
+                            @for (int i = 2023; i < 2030; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+
+                        <!-- Area Chart -->
+                        @*<div class="card shadow mb-4">*@
+                        @*<div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                        </div>*@
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="myAreaChart"></canvas>
+                            </div>
+                            @*<hr>
+                            Styling for the area chart can be found in the
+                            <code>/js/demo/chart-area-demo.js</code> file.*@
+                        </div>
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                        <script>
+                            $('#select').on('change', function () {
+                                var year = parseInt($(this).val());
+                                $.ajax({
+                                    url: '/Admin/Index',
+                                    data: {
+                                        year: year
+                                    },
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    success: function (res) {
+                                        if (res.status == true) {
+                                            console.log(res.data);
+                                            tkbyyear(res.data);
+                                        }
+                                    }
+
+                                });
+
+                                //$.get('/Admin/TKDoanhthu?year=' + year, function (resp) {
+                                //     console.log(resp);
+                                //     tkbyyear(resp);
+                                //})
+
+                            });
+                            function destroyChart() {
+                                console.log(lsdata1);
+                                destroyChart(); // Hủy biểu đồ cũ
+                                var existingChart = Chart.getChart("myAreaChart");
+                                if (existingChart) {
+                                    existingChart.destroy();
+                                }
+                            }
+
+                            function tkbyyear(lsdata1) {
+                                console.log(lsdata1);
+                                var lslabel = [];
+                                var lsdata = [];
+                                if (lsdata1 && Array.isArray(lsdata1)) {
+                                    $.each(lsdata1, function (index, item) {
+                                        if (item && item.thang !== undefined && item.doanhThu !== undefined) {
+                                            console.log("item.Thang:", item.thang);
+                                            console.log("item.DoanhThu:", item.doanhThu);
+
+                                            lslabel.push(item.thang);
+                                            lsdata.push(item.doanhThu);
+                                        } else {
+                                            console.log("Invalid item format at index", index);
+                                        }
+                                    });
+                                } else {
+                                    console.log("lsdata1 is undefined or not an array.");
+                                }
+                                console.log(lslabel);
+                                console.log(lsdata);
+
+                                var ctx = document.getElementById('myAreaChart');
+                                var datachart = {
+                                    labels: lslabel/*["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]*/,
+                                    datasets: [{
+                                        label: "Doanh thu",
+                                        lineTension: 0.3,
+                                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                                        borderColor: "rgba(78, 115, 223, 1)",
+                                        pointRadius: 3,
+                                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                                        pointHoverRadius: 3,
+                                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                                        pointHitRadius: 10,
+                                        pointBorderWidth: 2,
+                                        data: lsdata /* [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000]*/,
+                                    }],
+                                };
+                                var mychart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: datachart,
+
+                                });
+                            }
+
+                        </script>
+
+                        @*</div>*@
+
+                        <!-- Bar Chart -->
+                        @*<div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                        </div>
+                        <div class="card-body">
+                        <div class="chart-bar">
+                        <canvas id="myBarChart"></canvas>
+                        </div>
+                        <hr>
+                        Styling for the bar chart can be found in the
+                        <code>/js/demo/chart-bar-demo.js</code> file.
+                        </div>
+                        </div>*@
+
+                    </div>
+
+                    <!-- Donut Chart -->
+                    <!--<div class="col-xl-4 col-lg-5">
+                         <div class="card shadow mb-4">-->
+                    <!-- Card Header - Dropdown -->
+                    <!--<div class="card-header py-3">
+                         <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    </div>-->
+                    <!-- Card Body -->
+                    <!--<div class="card-body">
+                                   <div class="chart-pie pt-4">
+                                        <canvas id="myPieChart"></canvas>
+                                   </div>
+                                   <hr>
+                                   Styling for the donut chart can be found in the
+                                   <code>/js/demo/chart-pie-demo.js</code> file.
+                              </div>
+                         </div>
+                    </div>-->
+                </div>
+
+            </div>
+        </section>
+        <!-- /.content -->
+
+    </div>
+
+
+
+
+
+
+
+
+</div>
+
+<script src="~/Admin/dist/js/adminlte.min.js"></script>

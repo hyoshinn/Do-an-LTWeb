@@ -1,0 +1,385 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+     ViewBag.Title = "ProductDetail";
+     Layout = "~/Views/Shared/_Layout.cshtml";
+     var sp = (ShopBanDoGiaDung.Models.Sanpham)ViewBag.sanpham;
+     var dg = (List<QuanLyShopDoGiaDung.Common.CommentView>)ViewBag.danhgia;
+     var sao = (double)ViewBag.sao;
+      string sessionvalue = HttpContextAccessor.HttpContext.Session.GetString("email");
+}
+@*<style>
+     div.stars {
+          width: 270px;
+          display: inline-block;
+     }
+
+     input.star {
+          display: none;
+     }
+
+     label.star {
+          float: right;
+          padding: 10px;
+          font-size: 36px;
+          color: #444;
+          transition: all .2s;
+     }
+
+     input.star:checked ~ label.star:before {
+          content: '\f005';
+          color: #FD4;
+          transition: all .25s;
+     }
+
+     input.star-5:checked ~ label.star:before {
+          color: #FE7;
+          text-shadow: 0 0 20px #952;
+     }
+
+     input.star-1:checked ~ label.star:before {
+          color: #F62;
+     }
+
+     label.star:hover {
+          transform: rotate(-15deg) scale(1.3);
+     }
+
+     label.star:before {
+          content: '\f006';
+          font-family: FontAwesome;
+     }
+</style>*@
+<div class=" single_top">
+     <div class="single_grid">
+          <div class="grid images_3_of_2">
+               <ul id="etalage">
+                    <li>
+                         <a href="optionallink.html">
+                              <img class="etalage_thumb_image img-responsive" src="~/BigShopee/images/@sp.Anh1"  />
+                              <img class="etalage_source_image img-responsive" src="~/BigShopee/images/@sp.Anh1" title="" />
+                         </a>
+                    </li>
+                    <li>
+                         <img class="etalage_thumb_image img-responsive" src="~/BigShopee/images/@sp.Anh2" />
+                         <img class="etalage_source_image img-responsive" src="~/BigShopee/images/@sp.Anh2"  title="" />
+                    </li>
+                    <li>
+                         <img class="etalage_thumb_image img-responsive" src="~/BigShopee/images/@sp.Anh3"  />
+                         <img class="etalage_source_image img-responsive" src="~/BigShopee/images/@sp.Anh3"  />
+                    </li>
+                    <li>
+                         <img class="etalage_thumb_image img-responsive" src="~/BigShopee/images/@sp.Anh4"  />
+                         <img class="etalage_source_image img-responsive" src="~/BigShopee/images/@sp.Anh4"  />
+                    </li>
+                    <li>
+                         <img class="etalage_thumb_image img-responsive" src="~/BigShopee/images/@sp.Anh5"  />
+                         <img class="etalage_source_image img-responsive" src="~/BigShopee/images/@sp.Anh5"  />
+                    </li>
+                    <li>
+                         <img class="etalage_thumb_image img-responsive" src="~/BigShopee/images/@sp.Anh6"/>
+                         <img class="etalage_source_image img-responsive" src="~/BigShopee/images/@sp.Anh6" />
+                    </li>
+               </ul>
+               <div class="clearfix"> </div>
+          </div>
+          <div class="desc1 span_3_of_2">
+               <h4>@sp.TenSp</h4>
+               @if (sao == 0)
+               {
+
+                    <span>Chưa có đánh giá</span>
+               }
+               else
+               {
+                    <div>
+                         @if (sao > 0 && sao < 1)
+                         {
+                              <ul class="list-inline mb-0" style=" font-size: 16px;">
+                                   <li>@sao / 5.0 ( @dg.Count() đánh giá )</li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star-half-alt text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star-half-alt text-warning" style="color:yellow"></i></li>
+                              </ul>
+                         }
+                         @if (sao >= 1 && sao < 2)
+                         {
+                              <ul class="list-inline mb-0" style=" font-size: 16px;">
+                                   <li>@sao / 5.0 ( @dg.Count() đánh giá )</li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star-half-alt text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                              </ul>
+                         }
+                         @if (sao >= 2 && sao < 3)
+                         {
+                              <ul class="list-inline mb-0" style=" font-size: 16px;">
+                                   <li>@sao / 5.0 ( @dg.Count() đánh giá )</li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star-half-alt text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                              </ul>
+                         }
+                         @if (sao >= 3 && sao < 4)
+                         {
+                              <ul class="list-inline mb-0" style=" font-size: 16px;">
+                                   <li>@sao / 5.0 ( @dg.Count() đánh giá )</li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star-half-alt text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                              </ul>
+                         }
+                         @if (sao >= 4 && sao < 5)
+                         {
+                              <ul class="list-inline mb-0" style=" font-size: 16px;">
+                                   <li>@sao / 5.0 ( @dg.Count() đánh giá )</li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star-half-alt text-warning" style="color:yellow"></i></li>
+                              </ul>
+                         }
+                         @if (sao == 5)
+                         {
+                              <ul class="list-inline mb-0" style=" font-size: 16px;">
+                                   <li>@sao / 5.0 ( @dg.Count() đánh giá )</li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                   <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                              </ul>
+                         }
+
+                    </div>
+               }
+          <div class="cart-b">
+               <div class="left-n">@sp.GiaTien</div>
+               @* @if (sessionvalue != null)
+               { *@
+                    <a class="now-get get-cart-in" id="btnAdd" @*data-id="@sp.MaSP"*@ onclick="addItem(@sp.MaSp)" href="#">THÊM VÀO GIỎ</a>
+               @* }
+               else
+               {
+                    <a class="now-get get-cart-in" href="@Url.Action("Login", "Access")">THÊM VÀO GIỎ</a>
+               } *@
+               <script>
+                    function addItem(ma) {
+                         var productid = parseInt(ma);
+
+                         $.ajax({
+                              url: '/Cart/AddItem',
+                              data: {
+                                   productId: productid
+                              },
+                              type: 'POST',
+                              dataType: 'json',
+                              success: function (res) {
+                                   if (res.status == true) {
+                                         $('#dot-cart').html(res.countCart)
+                                       
+                                        Swal.fire({
+                                             position: 'center',
+                                             icon: 'success',
+                                             title: 'Thêm sản phẩm vào giỏ hàng thành công',
+                                             showConfirmButton: false,
+                                             timer: 700
+                                        })
+
+                                   } else {
+                                        Swal.fire({
+                                             position: 'center',
+                                             icon: 'error',
+                                             title: 'Xin lỗi, sản phẩm bạn vừa chọn đang tạm hết hàng',
+                                             showConfirmButton: false,
+                                             timer: 700
+                                        })
+                                   }
+                              }
+
+                         });
+                    }
+               </script>
+
+               <div class="clearfix"></div>
+          </div>
+               <h6>Đã bán : <span style="color:red">@sp.SoLuongDaBan</span> sản phẩm ,còn  <span style="color:red">@sp.SoLuongTrongKho</span>  sản phẩm </h6>
+               <p>      @sp.MoTa.</p>
+
+          </div>
+          <div class="clearfix"> </div>
+     </div>
+     <script type="text/javascript">
+          $(window).load(function () {
+               $("#flexiselDemo1").flexisel({
+                    visibleItems: 5,
+                    animationSpeed: 1000,
+                    autoPlay: true,
+                    autoPlaySpeed: 3000,
+                    pauseOnHover: true,
+                    enableResponsiveBreakpoints: true,
+                    responsiveBreakpoints: {
+                         portrait: {
+                              changePoint: 480,
+                              visibleItems: 1
+                         },
+                         landscape: {
+                              changePoint: 640,
+                              visibleItems: 2
+                         },
+                         tablet: {
+                              changePoint: 768,
+                              visibleItems: 3
+                         }
+                    }
+               });
+
+          });
+     </script>
+     <script type="text/javascript" src="~/BigShopee/js/jquery.flexisel.js"></script>
+     <div class="product_desc">
+          <div id="horizontalTab" style="display: block; width: 100%; margin: 0px;">
+               <ul class="resp-tabs-list">
+                    <li class="resp-tab-item" aria-controls="tab_item-2" role="tab">Đánh giá</li>
+                    <div class="clear"></div>
+               </ul>
+               <div class="resp-tabs-container">
+
+                    <h2 class="resp-accordion" role="tab" aria-controls="tab_item-2"><span class="resp-arrow"></span>Đánh giá</h2>
+                    <div class="review resp-tab-content resp-tab-active" aria-labelledby="tab_item-2">
+
+                         <div class="your-review">
+                              <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css'>
+                              <div id="div_allcomment">
+                                   <h3>Tất cả đánh giá (@dg.Count đánh giá)</h3>
+                                   @foreach (var itemcomment in dg)
+                                   {
+                                        <div class="row" style="margin-left: 14px; margin-top: 24px;">
+                                             <!-- Review item START -->
+                                             <div class="d-md-flex my-4" style="display:inline-flex">
+                                                  <!-- Avatar -->
+                                                  <div class="avatar avatar-xl me-4 flex-shrink-0">
+                                                       <img class="avatar-img img-circle" src="~/BigShopee/images/avartar.jpg" alt="avatar" width="40" style="width: 79px; margin-top: 9px">
+                                                  </div>
+                                                  <!-- Text -->
+                                                  <div class="col-md-12">
+                                                       <div class="d-sm-flex mt-1 mt-md-0 align-items-center">
+                                                            <h5 class="me-3 mb-0">@itemcomment.TenTaiKhoan</h5>
+                                                            <!-- Review star -->
+                                                            <ul class="list-inline mb-0">
+                                                                 <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+                                                                 @if (itemcomment.DanhGia >= 2)
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                                                 }
+                                                                 @if (itemcomment.DanhGia >= 3)
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                                                 }
+                                                                 @if (itemcomment.DanhGia >= 4)
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                                                 }
+                                                                 @if (itemcomment.DanhGia >= 5)
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="fas fa-star text-warning" style="color:yellow"></i></li>
+
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                      <li class="list-inline-item me-0"><i class="far fa-star text-warning" style="color:yellow"></i></li>
+                                                                 }
+
+                                                            </ul>
+                                                       </div>
+                                                       <!-- Info -->
+                                                       <p class="small mb-2">@itemcomment.ThoiGian</p>
+                                                       <div class="mt-2">
+                                                            <p class="mb-2">@itemcomment.NoiDung</p>
+                                                            <div class="bg-white"></div>
+                                                            <div class="d-flex flex-row">
+                                                                 <a class="accordion-collapse collapse show" href="#commmentreply-itemcomment.ID" data-bs-toggle="collapse" aria-expanded="true" aria-controls="collapse-1">
+                                                                      <i class="fas fa-reply me-2"></i>Phản hồi
+                                                                 </a>
+                                                            </div>
+
+                                                       </div>
+                                                     
+                                                  </div>
+
+                                             </div>
+                                        </div>
+
+                                   }
+
+                              </div>
+
+
+                         </div>
+                    </div>
+               </div>
+          </div>
+         
+          <script src="~/BigShopee/js/jquery.etalage.min.js"></script>
+          <script>
+               jQuery(document).ready(function ($) {
+
+                    $('#etalage').etalage({
+                         thumb_image_width: 400,
+                         thumb_image_height: 400,
+                         source_image_width: 900,
+                         source_image_height: 1200,
+                         show_hint: true,
+                         click_callback: function (image_anchor, instance_id) {
+                              alert('Callback example:\nYou clicked on an image with the anchor: "' + image_anchor + '"\n(in Etalage instance: "' + instance_id + '")');
+                         }
+                    });
+
+               });
+          </script>
+          <script>
+               function formatcurrency(cur) {
+                    return new Intl.NumberFormat('vi-vn', { style: 'currency', currency: 'vnd' }).format(cur);
+               }
+               const moneylist = document.querySelectorAll(".left-n")
+               for (let i = 0; i < moneylist.length; i++) {
+                    moneylist[i].innerHTML = formatcurrency(Number(moneylist[i].innerHTML))
+               }
+          </script>
+          <script src="~/HomeShoppe/js/easyResponsiveTabs.js" type="text/javascript"></script>
+          <link href="~/HomeShoppe/css/easy-responsive-tabs.css" rel="stylesheet" type="text/css" media="all" />
+          <script type="text/javascript">
+               $(document).ready(function () {
+                    $('#horizontalTab').easyResponsiveTabs({
+                         type: 'default', //Types: default, vertical, accordion
+                         width: 'auto', //auto or any width like 600px
+                         fit: true   // 100% fit in a container
+                    });
+               });
+          </script>
+     </div>
+</div>

@@ -1,0 +1,65 @@
+﻿@model ShopBanDoGiaDung.Common.LoginInfo
+@{
+    Layout = null;
+    var previousPage = ViewBag.prevouisPage;
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Access/style.css">
+    <title>LOGIN</title>
+</head>
+<body>
+    <div class="form-structor">
+    <div class="login slide-up">
+		
+            <div class="center">
+                
+                <h2 class="form-title" id="login">Đăng ký</h2>
+                <form  id="input-register" asp-controller="Access" asp-action="Register">
+                    <div class="form-holder">                
+                           
+
+                            <input type="text" class="input" name="Ten" placeholder="Name" />
+                            <input type="date" class="input" name="ngaysinh" placeholder="NgaySinh" />
+                            <input type="text" class="input" name="diachi" placeholder="diachi" />
+                            <input type="text" class="input" name="sdt" placeholder="sdt" />
+                            <input type="email" class="input" name="Email" placeholder="Email" />
+                            <input type="password" class="input" name="Password" placeholder="Password" />  
+                                              
+                    </div>
+                     <input hidden type="text" name="previousPage" value="@previousPage"/>
+                     @if( ViewData["action"] == "register" && @ViewData["ValidateMessage"] != null){
+                          <span style="color: red;font-size: 13px;margin-left: 4px">@ViewData["ValidateMessage"]</span>
+                     }
+                     
+
+                    <button type="submit" class="submit-btn">Đăng ký</button>
+                </form>
+		    </div>
+     
+	</div>
+	<div class="signup">
+            <h2 class="form-title" id="signup">Đăng nhập</h2>
+                <form  id="input-login" asp-controller="Access" asp-action="Login">
+                <div class="form-holder" > 
+                        <input type="email" class="input" name="Email" placeholder="Email" />
+                        <input type="password" class="input" name="Password" placeholder="Password" />
+                        
+                </div>
+                <input hidden type="text" name="previousPage" value="@previousPage"/>
+                  @if( ViewData["action"] == "login" && @ViewData["ValidateMessage"] != null){
+                          <span style="color: red;font-size: 13px;margin-left: 4px">@ViewData["ValidateMessage"]</span>
+                 } 
+                <button type="submit"  class="submit-btn">Đăng nhập</button>  
+                </form>  
+            
+	</div>
+	
+</div>
+<script src="~/Access/script.js"></script>
+</body>
+</html>

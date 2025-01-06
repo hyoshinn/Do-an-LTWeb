@@ -1,0 +1,63 @@
+ @model QuanLyShopDoGiaDung.Common.PaginatedList<ShopBanDoGiaDung.Models.Sanpham>
+
+ @* <nav style="float: right; margin-right: 29px;" aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+               @if (Model.CanPrevious)
+               {
+                    <li class="page-item">
+                         <a class="page-link" tabindex="-1" asp-controller="Home" asp-action="AllProduct" asp-route-PageIndex="@(Model.PageIndex - 1 )" asp-route-PageSize="6">Previous</a>
+                    </li>
+               }
+               else
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">Previous</a>
+                    </li>
+               }
+               
+               @if (Model.PageIndex > 3)
+               {
+                    <li class="page-item">
+                         <a class="page-link" asp-controller="Home" asp-action="AllProduct" asp-route-PageIndex="1" asp-route-PageSize="6">1</a>
+                    </li>
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">...</a>
+                    </li>
+               }
+
+               @for (var i = Math.Max(1, Model.PageIndex - 2); i <= Math.Min(Model.TotalPage, Model.PageIndex + 2); i++)
+               {
+                    if (Model.PageIndex == i)
+                    {
+                         <li class="page-item"><a style="background-color: #1DBAA5;" class="page-link" asp-controller="Home" asp-action="AllProduct" asp-route-PageIndex="@i" asp-route-PageSize="6">@i</a></li>
+                    }
+                    else
+                    {
+                         <li class="page-item"><a class="page-link" asp-controller="Home" asp-action="AllProduct" asp-route-PageIndex="@i" asp-route-PageSize="6">@i</a></li>
+                    }
+               }
+
+               @if (Model.PageIndex < Model.TotalPage - 2)
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">...</a>
+                    </li>
+                    <li class="page-item">
+                         <a class="page-link" asp-controller="Home" asp-action="AllProduct" asp-route-PageIndex="@Model.TotalPage" asp-route-PageSize="6">@Model.TotalPage</a>
+                    </li>
+               }
+
+               @if (Model.CanNext)
+               {
+                    <li class="page-item">
+                         <a class="page-link" aria-disabled="@Model.CanNext" asp-controller="Home" asp-action="AllProduct" asp-route-PageIndex="@(Model.PageIndex + 1)" asp-route-PageSize="6">Next</a>
+                    </li>
+               }
+               else
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link">Next</a>
+                    </li>
+               }
+          </ul>
+      </nav> *@

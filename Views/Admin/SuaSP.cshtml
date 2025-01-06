@@ -1,0 +1,213 @@
+﻿
+@{
+     ViewBag.Title = "SuaSP";
+     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+     var sp = (ShopBanDoGiaDung.Models.Sanpham)ViewBag.sp;
+     var ds1 = (List<ShopBanDoGiaDung.Models.Danhmucsanpham>)ViewBag.dsdm;
+     var ds2 = (List<ShopBanDoGiaDung.Models.Hangsanxuat>)ViewBag.dshang;
+}
+     <!-- End of Topbar -->
+     <!-- Begin Page Content -->
+<div class ="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Cập nhật thông tin sản phẩm</h3>
+                        </div>
+
+                    </div>
+                </div>
+
+                <form class="was-validated" method="post" action="/Admin/SuaSP" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <input type="text" name="MaSP" value="@sp.MaSp" style="display:none" />
+                        <div class="form-group">
+                            <label for="uname">Tên sản phẩm:</label>
+                            <input type="text" class="form-control" id="uname" value="@sp.TenSp" name="TenSP" required>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Mô tả sản phẩm:</label>
+                            <input type="text" class="form-control" id="pwd" value="@sp.MoTa" name="MoTa" required>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Ảnh 1:</label>
+                            <input type="file" class="form-control" name="image1" id="image1">
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                            <input type="text" name="Anh1" value="@sp.Anh1" style=" display:none" />
+                            <img class="img-responsive chain" style="width:20%" src="~/Admin/images/@sp.Anh1" alt=" ">
+                            <img id="preview1" class="img-responsive chain" style="width: 20%;display: none" src="#" alt=" ">
+                            <script>
+                                image1.onchange = evt1 => {
+
+                                    const [file1] = image1.files
+
+                                    if (file1) {
+                                        preview1.src = URL.createObjectURL(file1);
+                                        $("#preview1").show();
+                                    }
+                                }
+
+                            </script>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Ảnh 2:</label>
+                            <input type="file" class="form-control" name="image2" id="image2">
+                            <input type="text" name="Anh2" value="@sp.Anh2" style=" display:none" />
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                            <img class="img-responsive chain" style="width:20%" src="~/Admin/images/@sp.Anh2" alt=" ">
+                            <img id="preview2" class="img-responsive chain" style="width:20%; display:none" src="#" alt=" ">
+                            <script>
+                                image2.onchange = evt2 => {
+
+                                    const [file2] = image2.files
+
+                                    if (file2) {
+                                        preview2.src = URL.createObjectURL(file2);
+                                        $("#preview2").show();
+                                    }
+                                }
+
+                            </script>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Ảnh 3:</label>
+                            <input type="file" class="form-control" name="image3">
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                            <img class="img-responsive chain" style="width:20%" src="~/Admin/images/@sp.Anh3" alt=" ">
+                            <input type="text" name="Anh3" value="@sp.Anh3" style=" display:none" />
+                            <img id="preview3" class="img-responsive chain" style="width:20%;display:none" src="#" alt=" ">
+                            <script>
+                                image3.onchange = evt3 => {
+
+                                    const [file3] = image3.files
+
+                                    if (file3) {
+                                        preview3.src = URL.createObjectURL(file3);
+                                        $("#preview3").show();
+                                    }
+                                }
+
+                            </script>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Ảnh 4:</label>
+                            <input type="file" class="form-control" id="image4" name="image4">
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                            <img class="img-responsive chain" style="width:20%" src="~/Admin/images/@sp.Anh4" alt=" ">
+                            <input type="text" name="Anh4" value="@sp.Anh4" style=" display:none" />
+                            <img id="preview4" class="img-responsive chain" style="width:20%; display:none" src="#" alt=" ">
+                            <script>
+                                image4.onchange = evt4 => {
+
+                                    const [file4] = image4.files
+
+                                    if (file4) {
+                                        preview4.src = URL.createObjectURL(file4);
+                                        $("#preview4").show();
+                                    }
+                                }
+
+                            </script>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Ảnh 5:</label>
+                            <input type="file" class="form-control" id="image5" name="image5">
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                            <img class="img-responsive chain" style="width:20%" src="~/Admin/images/@sp.Anh5" alt=" ">
+                            <input type="text" name="Anh5" value="@sp.Anh5" style=" display:none" />
+                            <img id="preview5" class="img-responsive chain" style="width:20%;display:none" src="#" alt=" ">
+                            <script>
+                                image5.onchange = evt5 => {
+                                    const [file5] = image5.files
+
+                                    if (file5) {
+                                        preview5.src = URL.createObjectURL(file5);
+                                        $("#preview5").show();
+                                    }
+                                }
+
+                            </script>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Ảnh 6:</label>
+                            <input type="file" class="form-control" id="image6" name="image6">
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                            <img class="img-responsive chain" style="width:20%" src="~/Admin/images/@sp.Anh6" alt=" ">
+                            <input type="text" name="Anh6" value="@sp.Anh6" style=" display:none" />
+                            <img id="preview6" class="img-responsive chain" style="width:20%;display:none" alt=" ">
+                            <script>
+                                image6.onchange = evt6 => {
+
+                                    const [file6] = image6.files
+
+                                    if (file6) {
+                                        preview6.src = URL.createObjectURL(file6);
+                                        $("#preview6").show();
+                                    }
+                                }
+
+                            </script>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Số lượng đã bán:</label>
+                            <input type="number" class="form-control" value="@sp.SoLuongDaBan" name="SoLuongDaBan" required>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Số lượng trong kho:</label>
+                            <input type="number" class="form-control" value="@sp.SoLuongTrongKho" name="SoLuongTrongKho" required>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Giá tiền:</label>
+                            <input type="number" class="form-control" value="@sp.GiaTien" name="GiaTien" required>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Danh mục:</label>
+                            <select class="form-control" name="DanhMuc">
+                                <option>@ViewBag.tendm</option>
+                                @foreach (var item in ds1)
+                                {
+                                    <option>@item.TenDanhMuc</option>
+                                }
+
+                            </select>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Hãng sản xuất:</label>
+                            <select class="form-control" name="Hang">
+                                <option>@ViewBag.tenhang</option>
+                                @foreach (var item in ds2)
+                                {
+                                    <option>@item.TenHang</option>
+                                }
+                            </select>
+                            <div class="invalid-feedback">Vui lòng điền vào trường này.</div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        </div>
+                        
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<script src="~/Admin/plugins/jquery/jquery.min.js"></script>
+<script src="~/Admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/Admin/dist/js/adminlte.min.js"></script>

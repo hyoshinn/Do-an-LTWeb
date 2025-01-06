@@ -1,0 +1,249 @@
+﻿
+@{
+    ViewBag.Title = "MyOrder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string typeMenu = ViewBag.typeMenu;
+     var donhang = (QuanLyShopDoGiaDung.Common.PaginatedList<ShopBanDoGiaDung.Models.Donhang>)ViewBag.donhang;
+
+}
+<div class="single_top">
+     <h2 style="margin-top: -15px">ĐƠN HÀNG CỦA TÔI</h2>
+     <input type="text" id="value-type-menu" hidden value="@typeMenu"></input>
+     <div class="single_grid">
+        <div id="cartContent">
+            <ul class="nav nav-tabs">
+                   @if( typeMenu == "tatca"){
+                       <li class="active"><a onclick="ChangeTypeMenu(1,10,'tatca')" >Tất cả đơn hàng</a></li>
+                   }else {<li><a onclick="ChangeTypeMenu(1,10,'tatca')" >Tất cả đơn hàng</a></li>}
+                   @* @if( typeMenu == "chuathanhtoan"){
+                       <li class="active"><a  onclick="ChangeTypeMenu(1,10,'chuathanhtoan')" >Chưa thanh toán</a></li>
+                   }else {<li><a onclick="ChangeTypeMenu(1,10,'chuathanhtoan')" >Chưa thanh toán</a></li>} *@
+                   @if( typeMenu == "choxacnhan"){
+                       <li class="active"><a onclick="ChangeTypeMenu(1,10,'choxacnhan')">Chờ xác nhận </a></li>
+                   }else {<li><a onclick="ChangeTypeMenu(1,10,'choxacnhan')">Chờ xác nhận </a></li>}
+                   @if( typeMenu == "dangvanchuyen"){
+                       <li class="active"><a onclick="ChangeTypeMenu(1,10,"dangvanchuyen")">Đang vận chuyển </a></li>
+                   }else {<li><a onclick="ChangeTypeMenu(1,10,'dangvanchuyen')" >Đang vận chuyển </a></li>}
+                   @if( typeMenu == "dahoanthanh"){
+                       <li class="active"><a onclick="ChangeTypeMenu(1,10,'dahoanthanh')"  >Đã hoàn thành</a></li>
+                   }else {<li><a onclick="ChangeTypeMenu(1,10,'dahoanthanh')" >Đã hoàn thành</a></li>}
+                    @if( typeMenu == "dahuy"){
+                       <li class="active"><a onclick="ChangeTypeMenu(1,10,'dahuy')">Đã hủy</a></li>
+                   }else {<li><a onclick="ChangeTypeMenu(1,10,'dahuy')" >Đã hủy</a></li>}
+            </ul>
+            <div class="tab-content">
+                <div id="home" class="tab-pane fade in active">
+                         <table class="table table-hover" id="showtable">
+                              <thead class="thead-light">
+                                   <tr>
+                                        <td>Mã đơn hàng</td>
+                                        <td>Người nhận</td>
+                                        <td>Địa chỉ giao hàng</td>
+                                        <td>Ngày mua</td>
+                                        <td>Tổng tiền</td>
+                                        <td>Tình trạng</td>
+                                        <td></td>
+                                   </tr>
+                              </thead>
+                              <tbody>
+                                   @foreach (var item in donhang.Data)
+                                   {
+                                   <tr>
+                                        <td>@item.MaDonHang</td>
+                                        <td>@item?.Vanchuyen?.NguoiNhan</td>
+                                        <td>@item?.Vanchuyen?.DiaChi</td>
+                                        <td>@item.NgayLap.Value.ToShortDateString()</td>
+                                        <td>@item.TongTien.Value.ToString("N0") VND</td>
+                                        @if (item.TinhTrang == 0)
+                                        {
+                                             <td>Chưa thanh toán</td>
+                                        }
+                                        @if (item.TinhTrang == 1)
+                                        {
+                                             <td>Chờ xác nhận</td>
+                                        }
+                                        @if (item.TinhTrang == 2)
+                                        {
+                                             <td>Đang giao hàng</td>
+                                        }
+                                        @if (item.TinhTrang == 3)
+                                        {
+                                             <td>Đã hoàn thành</td>
+                                        }
+                                        @if (item.TinhTrang == 4)
+                                        {
+                                             <td>Đã hủy</td>
+                                        }
+                                        <td><a class="btn btn-success" data-toggle="modal" id="viewbtn" data-target="#showmodal">Chi tiết</a></td>
+                                        @if(typeMenu == "choxacnhan"){
+                                            <td><a onclick="handleHuyDon(@donhang.PageIndex,10,@item.MaDonHang)" class="btn btn-danger" id="btnHuy">Hủy</a></td>
+                                        }
+                                        @if(typeMenu == "dangvanchuyen"){
+                                              <td><a class="btn btn-danger" onclick="NhanHang(@donhang.PageIndex,10,@item.MaDonHang)">Đã nhận được hàng</a></td>
+                                        }
+                                   </tr>
+                                   }
+                              </tbody>
+                         </table>
+                         <div id="showmodal" class="modal fade" role="dialog">
+                              <div class="modal-dialog modal-dialog-centered modal-xl" role="document" style="didonhanglay: flex; align-items: center; height: 100%; margin-bottom: 0; margin-top: 0">
+
+                              </div>
+                         </div>
+                         <script>
+                          $("#showtable").on("click", "#viewbtn", function () {
+                           var id = $(this).closest("tr").find("td").eq(0).html();
+                           $.ajax({
+                             url: "@Url.Action("MyOrderDetail", "Home")",
+                              data: { id: id },
+                                success: function (data) {
+                                $("#showmodal .modal-dialog").html(data);
+                                 }
+                            });
+                          });
+                          
+                          
+                
+                           
+                            
+                         </script>
+                    </div>
+            </div>
+             <nav style="float: right; margin-right: 29px;" aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+               @if (donhang.CanPrevious)
+               {
+                    <li class="page-item">
+                         <a class="page-link" tabindex="-1"   onclick="ChuyenTrang(@(donhang.PageIndex -1 ),10)" >Previous</a>
+                    </li>
+               }
+               else
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">Previous</a>
+                    </li>
+               }
+               
+               @if (donhang.PageIndex > 3)
+               {
+                    <li class="page-item">
+                         <a class="page-link"   onclick="ChuyenTrang(1,10)">1</a>
+                    </li>
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">...</a>
+                    </li>
+               }
+
+               @for (var i = Math.Max(1, donhang.PageIndex - 2); i <= Math.Min(donhang.TotalPage, donhang.PageIndex + 2); i++)
+               {
+                    if (donhang.PageIndex == i)
+                    {
+                         <li class="page-item"><a style="background-color: #1DBAA5;" class="page-link"   onclick="ChuyenTrang(@i,10)">@i</a></li>
+                    }
+                    else
+                    {
+                         <li class="page-item"><a class="page-link"  onclick="ChuyenTrang(@i,10)" >@i</a></li>
+                    }
+               }
+
+               @if (donhang.PageIndex < donhang.TotalPage - 2)
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link" tabindex="-1">...</a>
+                    </li>
+                    <li class="page-item">
+                         <a class="page-link"   onclick="ChuyenTrang(@donhang.TotalPage,10)">@donhang.TotalPage</a>
+                    </li>
+               }
+
+               @if (donhang.CanNext)
+               {
+                    <li class="page-item">
+                         <a class="page-link" aria-disabled="@donhang.CanNext"  onclick="ChuyenTrang(@(donhang.PageIndex + 1),10)">Next</a>
+                    </li>
+               }
+               else
+               {
+                    <li class="page-item disabled">
+                         <a class="page-link">Next</a>
+                    </li>
+               }
+          </ul>
+       </nav>
+        </div>
+     </div>
+</div>
+
+<script>
+     function ChangeTypeMenu(PageIndex,PageSize,typeMenu) {
+           $.ajax({
+                url: '@Url.Action("MyOrder","Home")',
+               type: 'GET',
+               success: function (res) { 
+                    if(typeMenu){
+                         stringTypeMenu = `&typeMenu=${typeMenu}`
+                    }
+                     window.location = '@Url.Action("MyOrder","Home")' + `?PageIndex=${PageIndex}` + `&PageSize=${PageSize}` + stringTypeMenu
+               }
+
+          });
+     }
+
+       function ChuyenTrang(PageIndex,PageSize) {
+          const typeMenu = $('#value-type-menu').val()
+           $.ajax({
+                url: '@Url.Action("MyOrder","Home")',
+               type: 'GET',
+               success: function (res) { 
+                    if(typeMenu){
+                         stringTypeMenu = `&typeMenu=${typeMenu}`
+                    }
+                     window.location = '@Url.Action("MyOrder","Home")' + `?PageIndex=${PageIndex}` + `&PageSize=${PageSize}` + stringTypeMenu
+               }
+
+          });
+     }
+     function handleHuyDon(PageIndex,PageSize,id){
+          Swal.fire({
+               title: 'Bạn có chắc chắn muốn hủy đon hàng ?',
+               showCancelButton: true,
+               confirmButtonText: 'Xóa',
+               denyButtonText: `Hủy`
+          }).then((result)=> {
+               if(result.isConfirmed){
+               $.ajax({
+                    url: "@Url.Action("HuyDonHang", "Home")",
+                    data: { ma: id },
+                         success: function (res) {
+                              if (res.status == true) {
+                                  window.location = '@Url.Action("MyOrder","Home")' + `?PageIndex=${PageIndex}` + `&PageSize=${PageSize}` + `&typeMenu=choxacnhan`
+                              }
+                         }
+               });
+               }
+               
+          });
+     }
+
+     function NhanHang(PageIndex,PageSize,id){
+          Swal.fire({
+               title: 'Bạn đã nhận được hàng ?',
+               showCancelButton: true,
+               confirmButtonText: 'Xác nhận',
+               denyButtonText: `Hủy`
+          }).then((result)=> {
+               if(result.isConfirmed){
+               $.ajax({
+                    url: "@Url.Action("DaNhanHang", "Home")",
+                    data: { ma: id },
+                         success: function (res) {
+                              if (res.status == true) {
+                                  window.location = '@Url.Action("MyOrder","Home")' + `?PageIndex=${PageIndex}` + `&PageSize=${PageSize}` + `&typeMenu=dangvanchuyen`
+                              }
+                         }
+               });
+               }
+               
+          });
+     }
+</script>

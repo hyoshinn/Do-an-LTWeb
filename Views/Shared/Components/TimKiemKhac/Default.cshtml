@@ -1,0 +1,176 @@
+@model List<ShopBanDoGiaDung.Models.Hangsanxuat>
+    @{
+        var id =  ViewBag.idHang; 
+        var maxPrice = ViewBag.maxPrice ;
+         var minPrice =  ViewBag.minPrice;
+    }
+<style>
+   .separator2 {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        font-size: 25px;
+        margin-bottom: 15px;
+        margin-top: 10px;
+        }
+
+        .separator2::before,
+        .separator2::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #0000005f;
+        }
+
+        .separator2:not(:empty)::before {
+        margin-right: .25em;
+        }
+
+        .separator2:not(:empty)::after {
+        margin-left: .25em;
+        }
+</style>
+
+  <div>
+             @* <div style="font-size: 25px; align-items: center;margin-bottom: 8px;margin-top: 15px;">Hãng sản xuất</div> *@
+             <div class="separator2">Chọn khoảng giá</div>
+
+              <div class="row">
+                   <div class="form-check col col-sm-6">
+                        <input onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" name="maxPrice" @(maxPrice == "10000000" ? "checked" : "") value="10000000"  />
+                        <label class="form-check-label" for="ncc">Dưới 10tr</label>
+                   </div>   
+                    <div class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(minPrice == "10000000" ? "checked" : "") name="minPrice" value="10000000" />
+                        <label class="form-check-label" for="ncc">Trên 10tr</label>
+                   </div>   
+                    <div class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(maxPrice == "20000000" ? "checked" : "") name="maxPrice"  value="20000000"/>
+                        <label class="form-check-label" for="ncc">Dưới 20tr</label>
+                   </div>   
+                   <div class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(minPrice == "20000000" ? "checked" : "") name="minPrice"  value="20000000"/>
+                        <label class="form-check-label" for="ncc">Trên 20tr</label>
+                   </div>     
+                    <div class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(maxPrice == "30000000" ? "checked" : "") name="maxPrice"  value="30000000"/>
+                        <label class="form-check-label" for="ncc">Dưới 30tr</label>
+                   </div> 
+                   <div class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(minPrice == "30000000" ? "checked" : "") name="minPrice"  value="30000000"/>
+                        <label class="form-check-label" for="ncc">Trên 30tr</label>
+                   </div>       
+                    <div style="margin-bottom: 5px;" class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(maxPrice == "40000000" ? "checked" : "") name="maxPrice" value="40000000" />
+                        <label class="form-check-label" for="ncc">Dưới 40tr</label>
+                   </div>   
+                    <div style="margin-bottom: 5px;" class="form-check col col-sm-6">
+                        <input  onclick="ChonDanhMuc3()" class="form-check-input" type="checkbox" id="lsp" @(minPrice == "40000000" ? "checked" : "") name="minPrice"  value="40000000"/>
+                        <label class="form-check-label" for="ncc">Trên 40tr</label>
+                   </div>    
+                    <div style="margin-bottom: 5px;" class="form-check col col-sm-8">
+                        <label  for="ncc">Nhập giá nhỏ nhất</label>
+                        <input value="@minPrice"  type="text" id="min_price_search" name="ncc" placeholder="Nhập giá nhỏ nhất" />                 
+                   </div>   
+                    <div class="form-check col col-sm-8">
+                        <label  for="ncc" >Nhập giá lớn nhất</label>
+                        <input value="@maxPrice"  type="text" id="max_price_search" name="ncc" placeholder="Nhập giá lớn nhất"  />                 
+                   </div>  
+                    <div class="form-check col col-sm-4">
+                        <button onclick="Loc()" style="width: 100%;">Lọc</button>               
+                   </div>   
+              </div>
+             
+      </div>
+        
+ <script>
+          
+           function Loc() {
+                
+                const lst_id_hangs = $("#lst_id_hangs").val()
+                const lst_id_category = $("#lst_id_category").val()      
+                const search = $("#search-name").val()
+                const maxPrice = $("#max_price_search").val()
+                const minPrice = $("#min_price_search").val()
+               
+                 $.ajax({
+                    url: '@Url.Action("AllProduct2","Home")',
+                    type: 'GET',
+                    success: function (res) { 
+                        let stringMaxPrice = ""
+                        let stringMinPrice = ""
+                        if(maxPrice) {
+                           stringMaxPrice = `&maxPrice=${maxPrice}`
+                        }
+                         if(minPrice) {
+                           stringMinPrice = `&minPrice=${minPrice}`
+                        }
+                        let stringLstIdhang = ""
+                         if (lst_id_hangs && lst_id_hangs !== "") {
+                         stringLstIdhang = `&idHangs=${lst_id_hangs}`
+                         }
+
+                         let stringCategory = ""
+                         if (lst_id_category && lst_id_category !== "") {
+                              stringCategory = `&idCategories=${lst_id_category}`
+                         }
+
+                          let stringSearch = ""
+                         if (search) {
+                              stringSearch = `&search=${search}`
+                         }
+                        window.location = '@Url.Action("AllProduct2","Home")' + `?PageIndex=${1}` + `&PageSize=${6}`+ stringMaxPrice + stringMinPrice + 
+                        stringCategory + stringLstIdhang + stringSearch
+                    }
+
+                });
+          
+
+            }
+            function ChonDanhMuc3() {
+                var selectedValuesMaxPrice;    
+                var selectedValuesMinPrice; 
+                const lst_id_hangs = $("#lst_id_hangs").val()
+                const lst_id_category = $("#lst_id_category").val()      
+                const search = $("#search-name").val()
+                // Lặp qua tất cả các checkbox để lấy giá trị của những checkbox đã chọn
+                $('input[name="maxPrice"]:checked').each(function() {
+                    selectedValuesMaxPrice = $(this).val()
+                }); 
+                $('input[name="minPrice"]:checked').each(function() {
+                    selectedValuesMinPrice = $(this).val()
+                });
+                 $.ajax({
+                    url: '@Url.Action("AllProduct2","Home")',
+                    type: 'GET',
+                    success: function (res) { 
+                        let stringMaxPrice = ""
+                        let stringMinPrice = ""
+                        if(selectedValuesMaxPrice) {
+                           stringMaxPrice = `&maxPrice=${selectedValuesMaxPrice}`
+                        }
+                         if(selectedValuesMinPrice) {
+                           stringMinPrice = `&minPrice=${selectedValuesMinPrice}`
+                        }
+                        let stringLstIdhang = ""
+                         if (lst_id_hangs && lst_id_hangs !== "") {
+                         stringLstIdhang = `&idHangs=${lst_id_hangs}`
+                         }
+
+                         let stringCategory = ""
+                         if (lst_id_category && lst_id_category !== "") {
+                              stringCategory = `&idCategories=${lst_id_category}`
+                         }
+
+                          let stringSearch = ""
+                         if (search) {
+                              stringSearch = `&search=${search}`
+                         }
+                        window.location = '@Url.Action("AllProduct2","Home")' + `?PageIndex=${1}` + `&PageSize=${6}`+ stringMaxPrice + stringMinPrice + 
+                        stringCategory + stringLstIdhang + stringSearch
+                    }
+
+                });
+          
+
+            }
+      </script>

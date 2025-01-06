@@ -1,0 +1,14 @@
+﻿@model List<ShopBanDoGiaDung.Models.Danhmucsanpham>
+<div class=" top-nav rsidebar span_1_of_left">
+    <h3 class="cate">DANH MỤC</h3>
+    <ul class="menu">     
+        @foreach (var item in Model)
+        {
+
+            <ul class="kid-menu ">
+                <li><a href="@Url.Action("SPDanhMuc","Home", new { id = item.MaDanhMuc, ten = item.TenDanhMuc})">@item.TenDanhMuc</a></li>
+               
+            </ul>
+        }
+    </ul>
+</div>

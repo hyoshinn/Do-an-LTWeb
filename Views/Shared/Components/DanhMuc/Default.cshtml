@@ -1,0 +1,126 @@
+
+@model List<ShopBanDoGiaDung.Models.Danhmucsanpham>
+@{
+    var id_category = ViewBag.idCategory ;
+     var idCategories = ViewBag.idCategories;
+}
+<style>
+   .separator1 {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        font-size: 25px;
+        margin-bottom: 15px;
+        margin-top: 10px;
+        }
+
+        .separator1::before,
+        .separator1::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #0000005f;
+        }
+
+        .separator1:not(:empty)::before {
+        margin-right: .25em;
+        }
+
+        .separator1:not(:empty)::after {
+        margin-left: .25em;
+        }
+</style>
+@* <div class=" top-nav rsidebar span_1_of_left" style="margin-top: 37px"> *@
+  @*  <h3 class="cate">DANH MỤC</h3>*@
+    @* <ul class="menu">        *@
+        @* @foreach (var item in Model)
+        {
+
+            if(id_category == item.MaDanhMuc){
+               <ul style="background-color:#1DBAA5;" class="kid-menu ">
+                <li><a href="@Url.Action("SPDanhMuc","Home", new { idCategory = item.MaDanhMuc, ten = item.TenDanhMuc})">@item.TenDanhMuc</a></li>
+               
+                </ul>
+            }else{
+               <ul class="kid-menu ">
+                <li><a href="@Url.Action("SPDanhMuc","Home", new { idCategory = item.MaDanhMuc, ten = item.TenDanhMuc})">@item.TenDanhMuc</a></li>
+               
+               </ul>
+            }
+           
+        } *@
+       <div style="margin-bottom: 17px;">
+             @* <div style="font-size: 25px; align-items: center;margin-bottom: 8px; margin-top: 15px;">Danh mục</div> *@
+             <div class="separator1">Danh mục</div>
+              <div class="row">
+                      @foreach (var item in Model)
+                        {
+                            
+                            <div  class="form-check col col-sm-6">
+                                   @{
+                                      
+                                          @* var  isChecked = !string.IsNullOrEmpty(idCategorys) && idCategorys.Split(',').Any(s => s.Trim() == item.MaHang.ToString()); *@
+                                           bool isChecked = false;
+                                            if (!string.IsNullOrEmpty(idCategories))
+                                            {
+                                                var categorys = idCategories.Split(',');
+                                                foreach (var category in categorys)
+                                                {
+                                                    if (category.ToString() == item.MaDanhMuc.ToString())
+                                                    {
+                                                        isChecked = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }                                      
+                                    }
+                                <input onclick="ChonDanhMuc2()" class="form-check-input" type="checkbox" id="category-@item.MaDanhMuc" name="category" value="@item.MaDanhMuc" @(isChecked ? "checked" : "")/>
+                                <label class="form-check-label" for="ncc">@item.TenDanhMuc</label>
+                            </div>                
+                          
+                        }
+              </div>
+      </div>
+      <script>
+           
+            function ChonDanhMuc2() {
+                 const lst_id_hangs = $("#lst_id_hangs").val()
+                var selectedValues = [];   
+                const maxPrice = $("#max_price_search").val()
+                const minPrice = $("#min_price_search").val()   
+                const search = $("#search-name").val()
+                // Lặp qua tất cả các checkbox để lấy giá trị của những checkbox đã chọn
+                $('input[name="category"]:checked').each(function() {
+                    selectedValues.push($(this).val());
+                });
+                $.ajax({
+                        url: '@Url.Action("AllProduct2","Home")',
+                    type: 'GET',
+                    success: function (res) { 
+                        var stringIdCategory = `&idCategories=${selectedValues.join(',')}`
+                        let stringLstIdhang = ""
+                        if (lst_id_hangs && lst_id_hangs !== "") {
+                            stringLstIdhang = `&idHangs=${lst_id_hangs}`
+                        }
+                         let stringMaxPrice = ""
+                        let stringMinPrice = ""
+                        if(maxPrice) {
+                         stringMaxPrice = `&maxPrice=${maxPrice}`
+                        }
+                        if(minPrice) {
+                            stringMinPrice = `&minPrice=${minPrice}`
+                        }
+                         let stringSearch = ""
+                         if (search) {
+                              stringSearch = `&search=${search}`
+                         }
+                        window.location = '@Url.Action("AllProduct2","Home")' + `?PageIndex=${1}` + `&PageSize=${6}`+ stringIdCategory + stringLstIdhang + stringMaxPrice +
+                         stringMinPrice + stringSearch
+                    }
+
+                });
+
+            }
+      </script>
+
+    @* </ul> *@
+@* </div> *@
